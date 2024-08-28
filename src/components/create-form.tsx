@@ -25,9 +25,10 @@ import {
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/use-toast"
+import React, { useState } from "react"
 
 const profileFormSchema = z.object({
-    username: z
+    name: z
         .string()
         .min(2, {
             message: "Username must be at least 2 characters.",
@@ -35,66 +36,90 @@ const profileFormSchema = z.object({
         .max(30, {
             message: "Username must not be longer than 30 characters.",
         }),
-    email: z
-        .string({
-            required_error: "Please select an email to display.",
+    omnichain: z
+        .string()
+        .min(2, {
+            message: "Username must be at least 2 characters.",
         })
-        .email(),
-    bio: z.string().max(160).min(4),
-    urls: z
-        .array(
-            z.object({
-                value: z.string().url({ message: "Please enter a valid URL." }),
-            })
-        )
-        .optional(),
+        .max(30, {
+            message: "Username must not be longer than 30 characters.",
+        }),
+    description: z.string().max(160).min(4)
 })
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>
 
 // This can come from your database or API.
 const defaultValues: Partial<ProfileFormValues> = {
-    bio: "I own a computer.",
-    urls: [
-        { value: "https://shadcn.com" },
-        { value: "http://twitter.com/shadcn" },
-    ],
+    // bio: "I own a computer.",
+    // urls: [
+    //     { value: "https://shadcn.com" },
+    //     { value: "http://twitter.com/shadcn" },
+    // ],
 }
 
 export function CreateForm() {
+
+    const hiddenBannerInput = React.useRef(null);
+    const [banner, setBanner] = useState<any>();
+
     const form = useForm<ProfileFormValues>({
         resolver: zodResolver(profileFormSchema),
         defaultValues,
-        mode: "onChange",
+        mode: "onChange"
     })
 
-    const { fields, append } = useFieldArray({
-        name: "urls",
-        control: form.control,
-    })
 
     function onSubmit(data: ProfileFormValues) {
-        toast({
-            title: "You submitted the following values:",
-            description: (
-                <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-                    <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-                </pre>
-            ),
-        })
+        if (!banner) {
+            toast({
+                title: "Please upload a banner",
+                description: (
+                    <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+                        <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+                    </pre>
+                ),
+            })
+            return;
+        }
     }
+
+    // const handleBannerChange = async (e: any) => {
+    //     const file = e.target.files[0];
+    //     console.log('This is the file', file);
+    //     if (file.type.startsWith('image')) {
+    //         setBanner(
+    //             Object.assign(file, {
+    //                 preview: URL.createObjectURL(file),
+    //             })
+    //         );
+    //     }
+    // };
+
+    const handleBannerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file && file.type.startsWith("image/")) {
+            setBanner(Object.assign(file, {
+                preview: URL.createObjectURL(file),
+            }));
+            // form.setValue("banner", file, { shouldValidate: true });
+        } else {
+            // form.setError("banner", { type: "manual", message: "Invalid file type. Please upload an image." });
+        }
+    };
 
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                 <FormField
                     control={form.control}
-                    name="username"
+                    name="name"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Username</FormLabel>
+                            <FormLabel>Name</FormLabel>
                             <FormControl>
-                                <Input placeholder="shadcn" {...field} />
+                                <Input placeholder="shadcn" {...field}
+                                />
                             </FormControl>
                             <FormDescription>
                                 This is your public display name. It can be your real name or a
@@ -106,20 +131,55 @@ export function CreateForm() {
                 />
                 <FormField
                     control={form.control}
-                    name="email"
+                    name="description"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Email</FormLabel>
+                            <FormLabel>Description</FormLabel>
+                            <FormControl>
+                                <Input placeholder="shadcn" {...field}
+                                />
+                            </FormControl>
+                            <FormDescription>
+                                This is your public display name. It can be your real name or a
+                                pseudonym. You can only change this once every 30 days.
+                            </FormDescription>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <>
+                    {banner?.preview ?
+                        <>
+                            <img
+                                src={banner.preview}
+                                alt="banner preview" width={100} height={100} />
+                        </> : ""
+                    }
+                    <Input placeholder="shadcn"
+                        type="file"
+                        onChange={(e) => {
+                            handleBannerChange(e);
+                            // form.register('banner').onChange(e);
+                        }}
+                    />
+                </>
+
+
+                <FormField
+                    control={form.control}
+                    name="omnichain"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Choose Omnichain provider</FormLabel>
                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                                 <FormControl>
                                     <SelectTrigger>
-                                        <SelectValue placeholder="Select a verified email to display" />
+                                        <SelectValue placeholder="Select omnichain provider" />
                                     </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                    <SelectItem value="m@example.com">m@example.com</SelectItem>
-                                    <SelectItem value="m@google.com">m@google.com</SelectItem>
-                                    <SelectItem value="m@support.com">m@support.com</SelectItem>
+                                    <SelectItem value="chainlink">Chainlink</SelectItem>
+                                    <SelectItem value="layerzero">Layer Zero</SelectItem>
                                 </SelectContent>
                             </Select>
                             <FormDescription>
@@ -130,59 +190,7 @@ export function CreateForm() {
                         </FormItem>
                     )}
                 />
-                <FormField
-                    control={form.control}
-                    name="bio"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Bio</FormLabel>
-                            <FormControl>
-                                <Textarea
-                                    placeholder="Tell us a little bit about yourself"
-                                    className="resize-none"
-                                    {...field}
-                                />
-                            </FormControl>
-                            <FormDescription>
-                                You can <span>@mention</span> other users and organizations to
-                                link to them.
-                            </FormDescription>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <div>
-                    {fields.map((field, index) => (
-                        <FormField
-                            control={form.control}
-                            key={field.id}
-                            name={`urls.${index}.value`}
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel className={cn(index !== 0 && "sr-only")}>
-                                        URLs
-                                    </FormLabel>
-                                    <FormDescription className={cn(index !== 0 && "sr-only")}>
-                                        Add links to your website, blog, or social media profiles.
-                                    </FormDescription>
-                                    <FormControl>
-                                        <Input {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                    ))}
-                    <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        className="mt-2"
-                        onClick={() => append({ value: "" })}
-                    >
-                        Add URL
-                    </Button>
-                </div>
+
                 <Button type="submit">Create DAO</Button>
             </form>
         </Form>

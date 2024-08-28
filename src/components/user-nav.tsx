@@ -20,7 +20,6 @@ import { useWeb3Auth } from "@web3auth/modal-react-hooks";
 
 export function UserNav() {
   const { connect, logout, isConnected } = useWeb3Auth()
-  console.log("THIS IS THE USRR INFO")
   const login = async () => {
     try {
       await connect()

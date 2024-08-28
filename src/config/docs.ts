@@ -13,6 +13,10 @@ export const docsConfig: DocsConfig = {
       href: "/proposals",
     },
     {
+      title: "Dap",
+      href: "/dao",
+    },
+    {
       title: "History",
       href: "/history",
     },

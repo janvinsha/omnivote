@@ -7,11 +7,6 @@ import { OpenloginAdapter } from "@web3auth/openlogin-adapter";
 import { WalletServicesPlugin } from "@web3auth/wallet-services-plugin";
 import { MetamaskAdapter } from "@web3auth/metamask-adapter";
 import { CoinbaseAdapter } from "@web3auth/coinbase-adapter";
-import { WalletConnectModal } from "@walletconnect/modal";
-import {
-    getWalletConnectV2Settings,
-    WalletConnectV2Adapter,
-} from "@web3auth/wallet-connect-v2-adapter";
 
 const chainConfig = {
     chainId: "0xaa36a7", // for wallet connect make sure to pass in this chain in the loginSettings of the adapter.
