@@ -40,15 +40,15 @@ export function MainNav() {
           Dao
         </Link>
         <Link
-          href="/history"
+          href="/assestation"
           className={cn(
             "transition-colors hover:text-foreground/80",
-            pathname === "/history" ? "text-foreground" : "text-foreground/60"
+            pathname === "/attestation" ? "text-foreground" : "text-foreground/60"
           )}
         >
-          History
+          Attestation
         </Link>
-        <Link
+        {/* <Link
           href="/create"
           className={cn(
             "transition-colors hover:text-foreground/80",
@@ -56,7 +56,7 @@ export function MainNav() {
           )}
         >
           Create
-        </Link>
+        </Link> */}
 
       </nav>
     </div>

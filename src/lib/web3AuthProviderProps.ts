@@ -36,7 +36,7 @@ const web3AuthOptions: Web3AuthOptions = {
 const metamaskAdapter = new MetamaskAdapter({
     clientId,
     sessionTime: 3600, // 1 hour in seconds
-    web3AuthNetwork: "sapphire_mainnet",
+    web3AuthNetwork: "sapphire_devnet",
     chainConfig: {
         chainNamespace: CHAIN_NAMESPACES.EIP155,
         chainId: "0x1",

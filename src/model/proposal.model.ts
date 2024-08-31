@@ -18,6 +18,7 @@ const proposalSchema: Schema = new Schema({
     description: { type: String },
     startTime: { type: Number },
     endTime: { type: Number },
+    hasEnded: { type: Boolean, default: false },
     totalVotes: { type: Number }
 }, {
     timestamps: true,

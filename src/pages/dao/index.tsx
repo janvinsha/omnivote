@@ -7,17 +7,33 @@ import {
     PageHeaderDescription,
     PageHeaderHeading,
 } from "@/components/page-header"
-import { Button } from "@/components/ui/button";
+
 import { siteConfig } from "@/config/site";
 import { CardList } from "@/components/card-list";
-
+import { CreateDaoDialog } from "@/components/create-dao-dialog";
+import ApiWrapper from "@/lib/ApiWrapper";
+import { useEffect } from "react";
 
 export default function Dao() {
+
+    const apiw = ApiWrapper.create();
+    const refreshProposalList = async () => {
+        await apiw.get('proposals').then((data: any) => {
+        });
+    };
+
+    useEffect(() => {
+        refreshProposalList();
+    }, []);
     return (
         <div className="container relative">
             <PageHeader>
                 {/* <Announcement /> */}
-                <PageHeaderHeading>Explore DAOs</PageHeaderHeading>
+
+                <div className="flex justify-between w-full items-start" >
+                    <PageHeaderHeading>Explore DAOs</PageHeaderHeading>
+                    <><CreateDaoDialog /></>
+                </div>
                 <PageHeaderDescription>
                     Explore DAOs in OmniVote
                 </PageHeaderDescription>

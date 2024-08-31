@@ -1,24 +1,24 @@
 import { useAtom } from "jotai"
 import { atomWithStorage } from "jotai/utils"
 
-import { ColorFormat } from "@/lib/colors"
+
 import { useMounted } from "./use-mounted"
 
 type Config = {
-    format: ColorFormat
+    daoFilter: any
 }
 
-const colorsAtom = atomWithStorage<Config>("colors", {
+const daoAtom = atomWithStorage<Config>("dao", {
     format: "hsl",
 })
 
 export function useColors() {
-    const [colors, setColors] = useAtom(colorsAtom)
+    const [daoFilter, setDaoFilter] = useAtom(daoAtom)
     const mounted = useMounted()
 
     return {
         isLoading: !mounted,
-        format: colors.format,
-        setFormat: (format: ColorFormat) => setColors({ format }),
+        daoFilter: daoFilter.format,
+        setDaoFilter: (daoFilter: any) => setDaoFilter({ daoFilter }),
     }
 }

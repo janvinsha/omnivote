@@ -1,7 +1,7 @@
 import { useEffect } from "react"
-import { CreateForm } from "@/components/create-form"
 import { Separator } from "@/components/ui/separator"
 import { SidebarNav } from "@/components/sidebar-nav"
+import { CreateDaoForm } from "@/components/create-dao-form"
 
 const sidebarNavItems = [
     {
@@ -51,7 +51,7 @@ export default function CreatePage() {
                         </p>
                     </div>
                     {/* <Separator /> */}
-                    <CreateForm />
+                    <CreateDaoForm />
                 </div>
             </div>
         </div>

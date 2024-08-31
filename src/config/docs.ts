@@ -13,17 +13,17 @@ export const docsConfig: DocsConfig = {
       href: "/proposals",
     },
     {
-      title: "Dap",
+      title: "Dao",
       href: "/dao",
     },
     {
-      title: "History",
-      href: "/history",
+      title: "Attestation",
+      href: "/attestation",
     },
-    {
-      title: "Create",
-      href: "/create",
-    },
+    // {
+    //   title: "Create",
+    //   href: "/create",
+    // },
   ],
   sidebarNav: [
 

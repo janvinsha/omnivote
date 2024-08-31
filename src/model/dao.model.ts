@@ -15,7 +15,9 @@ const daoSchema: Schema = new Schema({
     address: { type: String, required: true },
     name: { type: String },
     description: { type: String },
-    ipfsMetadataHash: { type: String }
+    image: { type: String },
+    mainChain: { type: String },
+    supportedChains: [{ type: String }]
     // tokenAddress: { type: String },
     // minimumTokens: { type: String }
 }, {

@@ -12,6 +12,7 @@ import { siteConfig } from "@/config/site";
 import { CardList } from "@/components/card-list";
 import ApiWrapper from "@/lib/ApiWrapper";
 import { useEffect } from "react";
+import { CreateProposalDialog } from "@/components/create-proposal-dialog";
 
 
 export default function Proposal() {
@@ -25,11 +26,16 @@ export default function Proposal() {
         refreshProposalList();
     }, []);
 
+    const list = { name: "Proposal", items: [{ name: "Propsal 1" }, { name: "Propsal 2" }] }
+
     return (
         <div className="container relative">
             <PageHeader>
                 {/* <Announcement /> */}
-                <PageHeaderHeading>Explore DAOs</PageHeaderHeading>
+                <div className="flex justify-between w-full items-start" >
+                    <PageHeaderHeading>Explore Proposals</PageHeaderHeading>
+                    <><CreateProposalDialog /></>
+                </div>
                 <PageHeaderDescription>
                     Explore Proposals in OmniVote
                 </PageHeaderDescription>
@@ -51,7 +57,7 @@ export default function Proposal() {
             {/* <ExamplesNav className="[&>a:first-child]:text-primary" /> */}
 
             <div>
-                <CardList />
+                <CardList list={list} />
             </div>
 
         </div>

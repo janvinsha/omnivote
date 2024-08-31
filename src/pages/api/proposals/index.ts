@@ -17,9 +17,6 @@ export default async function handler(
         if (req.method === 'POST') {
             return createProposal(req, res);
         }
-        if (req.method === 'PUT') {
-            return updateProposal(req, res);
-        }
 
         res.status(200).json({ message: 'All good' });
     } catch (e: any) {
@@ -37,6 +34,10 @@ async function createProposal(req: NextApiRequest, res: NextApiResponse) {
     proposal.name = req.body.name;
     proposal.description = req.body.description;
     proposal._id = new mongoose.Types.ObjectId();
+    proposal.startTime = req.body.startTime;
+    proposal.endTime = req.body.endTime;
+    proposal.hasEnded = req.body.hasEnded;
+
 
     try {
         const savedProposal = await proposal.save();
