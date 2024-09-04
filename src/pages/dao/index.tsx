@@ -17,13 +17,13 @@ import { useEffect } from "react";
 export default function Dao() {
 
     const apiw = ApiWrapper.create();
-    const refreshProposalList = async () => {
+    const refreshDaoList = async () => {
         await apiw.get('proposals').then((data: any) => {
         });
     };
 
     useEffect(() => {
-        refreshProposalList();
+        refreshDaoList();
     }, []);
     return (
         <div className="container relative">

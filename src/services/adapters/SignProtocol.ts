@@ -2,7 +2,8 @@ import {
     SignProtocolClient,
     SpMode,
     EvmChains,
-    DataLocation
+    DataLocation,
+    IndexService
 } from '@ethsign/sp-sdk';
 
 interface SignProtocolAdapterOptions {
@@ -69,5 +70,19 @@ export class SignProtocolAdapter {
             indexingValue: 'xxx',
         });
         return createAttestationRes;
+    }
+
+    public async getAllAttestations(query: {}): Promise<any> {
+        const indexService = new IndexService("testnet");
+        let _query = {
+            // id: schemaIds.sepolia.id,
+            schemaId: this.schemaId,
+            // attester: query?.attester,
+            page: 1,
+            // mode: "onchain"
+            // indexingValue: "xxx",
+        }
+        const retrieveAttestationsRes = await indexService.queryAttestationList(_query);
+        return retrieveAttestationsRes;
     }
 }

@@ -2,7 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import connectDb from '../../../model/db';
 import mongoose from 'mongoose';
-import { DaoModel } from '../../../model/dao.model';
+import DaoModel from '../../../model/dao.model';
 
 export default async function handler(
     req: NextApiRequest,
@@ -25,8 +25,8 @@ export default async function handler(
 }
 
 async function getAllDaos(req: NextApiRequest, res: NextApiResponse) {
-    const allUsers = await DaoModel.find();
-    return res.status(200).json({ users: allUsers });
+    const allDaos = await DaoModel.find();
+    return res.status(200).json({ daos: allDaos });
 }
 
 async function createDao(req: NextApiRequest, res: NextApiResponse) {
@@ -37,12 +37,13 @@ async function createDao(req: NextApiRequest, res: NextApiResponse) {
     dao.image = req.body.image;
     dao.supportedChains = req.body.supportedChains;
     dao.name = req.body.name;
+    dao.onChainID = req.body.onChainID;
     dao._id = new mongoose.Types.ObjectId();
 
     try {
         const savedDao = await dao.save();
 
-        return res.status(201).json({ user: savedDao });
+        return res.status(201).json({ dao: savedDao });
     } catch (e: any) {
         return res.status(400).json({ message: e.message });
     }

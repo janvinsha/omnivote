@@ -6,6 +6,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { Web3AuthProvider, Web3AuthInnerContext, useWeb3Auth } from "@web3auth/modal-react-hooks";
 import { web3AuthContextConfig } from "../lib/web3AuthProviderProps";
 import { Provider } from 'jotai'
+import { Toaster } from "@/components/ui/toaster"
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -19,6 +20,7 @@ export default function App({ Component, pageProps }: AppProps) {
         >
           <SiteHeader />
           <Component {...pageProps} />
+          <Toaster />
           <SiteFooter />
         </ThemeProvider>
       </Web3AuthProvider >

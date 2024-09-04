@@ -2,7 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import connectDb from '../../../model/db';
 import mongoose from 'mongoose';
-import { ProposalModel } from '../../../model/proposal.model';
+import ProposalModel from '../../../model/proposal.model';
 
 export default async function handler(
     req: NextApiRequest,
@@ -25,8 +25,8 @@ export default async function handler(
 }
 
 async function getAllProposals(req: NextApiRequest, res: NextApiResponse) {
-    const allUsers = await ProposalModel.find();
-    return res.status(200).json({ users: allUsers });
+    const allProposals = await ProposalModel.find();
+    return res.status(200).json({ users: allProposals });
 }
 
 async function createProposal(req: NextApiRequest, res: NextApiResponse) {
@@ -41,8 +41,7 @@ async function createProposal(req: NextApiRequest, res: NextApiResponse) {
 
     try {
         const savedProposal = await proposal.save();
-
-        return res.status(201).json({ user: savedProposal });
+        return res.status(201).json({ proposal: savedProposal });
     } catch (e: any) {
         return res.status(400).json({ message: e.message });
     }

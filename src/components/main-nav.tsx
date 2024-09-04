@@ -40,7 +40,7 @@ export function MainNav() {
           Dao
         </Link>
         <Link
-          href="/assestation"
+          href="/attestation"
           className={cn(
             "transition-colors hover:text-foreground/80",
             pathname === "/attestation" ? "text-foreground" : "text-foreground/60"
