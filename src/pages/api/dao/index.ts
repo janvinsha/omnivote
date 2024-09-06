@@ -30,8 +30,8 @@ async function getAllDaos(req: NextApiRequest, res: NextApiResponse) {
 }
 
 async function createDao(req: NextApiRequest, res: NextApiResponse) {
-    const dao = new DaoModel;
-    dao.address = req.body.address;
+    const dao = new DaoModel();
+    dao.ownerAddress = req.body.ownerAddress;
     dao.description = req.body.description;
     dao.mainChain = req.body.mainChain;
     dao.image = req.body.image;

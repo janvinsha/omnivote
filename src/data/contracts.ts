@@ -1,8 +1,11 @@
-export const sepoliaContractAddress = "0x26885d9ab3d6E4282058FB9f70E62d38c465e0B5";
-export const baseContractAddress = "0x3435bB7C5EF81E606acf3fb221be1619cFe5080A";
+export const sepoliaContractAddress = "0x72acA89A3E192fdD08687118d4860386B0477aFd";
+export const baseContractAddress = "0xe6C7FB0A747a0130911F82E6dBb5D7D930B6b265";
 export const LINKContractAddress = "0x0b9d5D9136855f6FEc3c0993feE6E9CE8a297846"
 export const baseChainSelector = "10344971235874465080"
 export const sepoliaChainSelector = "16015286601757825753"
-// const omnivoteContracts = { sepoliaContractAddress, baseContractAddress, LINKContractAddress, baseChainSelector, sepoliaChainSelector }
+export const sepoliaChainId = "0xaa36a7"
+export const baseChainId = "0x14a34"
 
-// export default omnivoteContracts
+export const signProtocolEthAddress = ""
+export const signProtocolBaseAddress = ""
+// 0x9a2bdb82b93e1a73ff0362cf8eb20256899e97db67b3d5f5ad7d990389a73457

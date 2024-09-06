@@ -6,7 +6,7 @@ import { CreateProposalForm } from "./create-proposal-form";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
-export function CreateProposalDialog() {
+export function CreateProposalDialog({ refreshList }: { refreshList: any }) {
     const [isOpen, setIsOpen] = useState(false);  // State to control dialog visibility
 
     const closeDialog = () => {
@@ -22,7 +22,7 @@ export function CreateProposalDialog() {
                     <DialogTitle>Create Proposal</DialogTitle>
                 </DialogHeader>
                 <div className="overflow-y-scroll h-5/6">
-                    <CreateProposalForm closeDialog={closeDialog} />
+                    <CreateProposalForm closeDialog={closeDialog} refreshList={refreshList} />
                 </div>
             </DialogContent>
         </Dialog>

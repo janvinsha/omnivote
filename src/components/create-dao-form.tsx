@@ -29,6 +29,7 @@ import Web3Adapter from "@/services/adapters/Web3Adapter";
 import { Checkbox } from "./ui/checkbox";
 import { uploadFileToIPFS } from "@/services/adapters/IPFSAdapter";
 import Loader from "./loader";
+import { getChainConfig, getChainId } from "@/lib/utils";
 
 const profileFormSchema = z.object({
     name: z
@@ -55,20 +56,18 @@ const defaultValues: Partial<ProfileFormValues> = {
 
 
 
-export function CreateDaoForm({ closeDialog }: { closeDialog: any }) {
+export function CreateDaoForm({ closeDialog, refreshList }: { closeDialog: any, refreshList: any }) {
     const apiw = ApiWrapper.create();
-    const { userInfo, provider } = useWeb3Auth();
+    const { userInfo, provider, web3Auth, switchChain, status, addChain } = useWeb3Auth();
+    const connectedChainId = web3Auth?.options?.chainConfig?.chainId
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    console.log("THE USER INFO", userInfo)
     const omnivoteContractList = [{
         value: sepoliaContractAddress, name: "ETH Sepolia"
     }, {
         value: baseContractAddress, name: "Base Sepolia"
     }]
 
-
-    const hiddenBannerInput = React.useRef(null);
     const [banner, setBanner] = useState<any>();
 
     const form = useForm<ProfileFormValues>({
@@ -76,7 +75,6 @@ export function CreateDaoForm({ closeDialog }: { closeDialog: any }) {
         defaultValues,
         mode: "onChange"
     })
-
 
     async function onSubmit(data: ProfileFormValues) {
         setIsSubmitting(true);
@@ -95,13 +93,18 @@ export function CreateDaoForm({ closeDialog }: { closeDialog: any }) {
             }
             let _banner = await uploadFileToIPFS(banner);
             console.log("THIS IS THE BANNER", _banner)
+            if (connectedChainId != getChainId(data.mainChain as string)) {
+                await addChain(getChainConfig(data.mainChain))
+                await switchChain({ chainId: getChainId(data.mainChain as string) })
+            }
 
             const transactionResponse = await web3Adapter.sendTransaction("addDao", "DaoAdded", data.name, data.description);
             console.log("THIS SI THE TRANSACTION RESPONSE", transactionResponse[0])
             await apiw.post('dao', {
-                ...data, banner: _banner, onChainID: transactionResponse[0], address: transactionResponse[1]
+                ...data, image: _banner, onChainID: transactionResponse[0], ownerAddress: transactionResponse[1]
             })
             closeDialog()
+            refreshList()
             toast({
                 title: "Successfully added a new dao",
             })
@@ -160,7 +163,7 @@ export function CreateDaoForm({ closeDialog }: { closeDialog: any }) {
                             <FormItem>
                                 <FormLabel>Description</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="shadcn" {...field}
+                                    <Input placeholder="DAO description" {...field}
                                     />
                                 </FormControl>
                                 <FormDescription>
@@ -180,7 +183,7 @@ export function CreateDaoForm({ closeDialog }: { closeDialog: any }) {
                             </> : ""
                         }
 
-                        <Input placeholder="shadcn"
+                        <Input placeholder="DAO banner"
                             type="file"
                             onChange={(e) => {
                                 handleBannerChange(e);

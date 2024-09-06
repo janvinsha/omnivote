@@ -1,6 +1,3 @@
-import Image from "next/image"
-import Link from "next/link"
-import { Inter } from "next/font/google";
 import {
     PageActions,
     PageHeader,
@@ -11,30 +8,42 @@ import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/config/site";
 import { CardList } from "@/components/card-list";
 import ApiWrapper from "@/lib/ApiWrapper";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { CreateProposalDialog } from "@/components/create-proposal-dialog";
+import { IProposal } from "@/model/proposal.model";
 
 
 export default function Proposal() {
+
+    const [proposals, setProposals] = useState<IProposal[]>()
+    const [loading, setLoading] = useState(false)
     const apiw = ApiWrapper.create();
     const refreshProposalList = async () => {
-        await apiw.get('proposals').then((data: any) => {
-        });
+        setLoading(true)
+        try {
+            await apiw.get('proposal').then((data: any) => {
+                const _proposals = data.proposals as IProposal[];
+                console.log("THIS IS THE PROPOSAL", _proposals)
+                setProposals(_proposals)
+            });
+        } catch (error) {
+            console.log("THIS IS THE ERROR", error)
+        } finally { setLoading(false) }
     };
 
     useEffect(() => {
         refreshProposalList();
     }, []);
 
-    const list = { name: "Proposal", items: [{ name: "Propsal 1" }, { name: "Propsal 2" }] }
+    const list = { name: "Proposals", type: "proposal", items: proposals }
 
     return (
-        <div className="container relative">
+        <div className="container relative  pb-[10rem]">
             <PageHeader>
                 {/* <Announcement /> */}
                 <div className="flex justify-between w-full items-start" >
                     <PageHeaderHeading>Explore Proposals</PageHeaderHeading>
-                    <><CreateProposalDialog /></>
+                    <><CreateProposalDialog refreshList={refreshProposalList} /></>
                 </div>
                 <PageHeaderDescription>
                     Explore Proposals in OmniVote
@@ -57,7 +66,7 @@ export default function Proposal() {
             {/* <ExamplesNav className="[&>a:first-child]:text-primary" /> */}
 
             <div>
-                <CardList list={list} />
+                <CardList list={list} loading={loading} />
             </div>
 
         </div>

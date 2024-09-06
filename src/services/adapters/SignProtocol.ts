@@ -15,25 +15,12 @@ const schemaIds = {
         id: "0x8d",
         txnHash: "0x252e36f37087c0611d73c963e72e101d36382479c05c136e8f837a8ebd41d09a",
     },
-    polygonAmoy: {
-        id: "0x8b",
-        txnHash: "0xc38e107e690a71431baaaf114fc801b35be550eb464d9ff95933e32bfbc5e199",
+    baseSepolia: {
+        id: "0x1cd",
+        txnHash: "0x92af1bdf73fdef3806e24b15c4f6cb5c3fa30f8214a21f9b9cb23214676ac97c",
     }
-    // Add other chains as needed
+
 };
-
-
-const attestation = {
-    attestationId
-        :
-        "0x146",
-    indexingValue
-        :
-        "xxx",
-    txHash
-        :
-        "0x8df75d8e8d4eba0f9bd4562ab9f9f7c63302eab3cc6a71633c2d459044d7cb87"
-}
 
 
 export class SignProtocolAdapter {
@@ -76,8 +63,8 @@ export class SignProtocolAdapter {
         const indexService = new IndexService("testnet");
         let _query = {
             // id: schemaIds.sepolia.id,
-            schemaId: this.schemaId,
-            // attester: query?.attester,
+            // schemaId: this.schemaId,
+            attester: query?.attester,
             page: 1,
             // mode: "onchain"
             // indexingValue: "xxx",

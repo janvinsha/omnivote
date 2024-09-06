@@ -3,7 +3,7 @@ import mongoose, { Schema, Document, models, Model } from 'mongoose';
 // Define the base DAO interface
 export interface IDao {
     onChainID: string;
-    address: string;
+    ownerAddress: string;
     name?: string;
     description?: string;
     image?: string;
@@ -18,7 +18,7 @@ export interface DaoDocument extends IDao, Document { }
 const daoSchema: Schema<DaoDocument> = new Schema(
     {
         onChainID: { type: String, required: true },
-        address: { type: String, required: true },
+        ownerAddress: { type: String, required: true },
         name: { type: String, trim: true, minlength: 2, maxlength: 100 },
         description: { type: String, trim: true, maxlength: 500 },
         image: { type: String, trim: true },

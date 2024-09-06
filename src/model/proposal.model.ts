@@ -2,12 +2,17 @@ import mongoose, { Schema, Document, models, Model } from 'mongoose';
 
 // Define the base Proposal interface
 export interface IProposal {
+    name: string;
     onChainID: string;
+    ownerAddress: string;
     description?: string;
-    startTime?: number;
-    endTime?: number;
+    startTime?: number;  // or Date if using Date
+    endTime?: number;    // or Date if using Date
+    mainChain?: string;
+    image?: string;
     hasEnded?: boolean;
     totalVotes?: number;
+    supportedChains?: string[];
 }
 
 // Define the document interface which extends Mongoose's Document
@@ -16,11 +21,16 @@ export interface ProposalDocument extends IProposal, Document { }
 // Create the schema for the Proposal model
 const proposalSchema: Schema<ProposalDocument> = new Schema(
     {
+        name: { type: String, required: true },
         onChainID: { type: String, required: true, trim: true },
+        ownerAddress: { type: String, required: true, trim: true },
         description: { type: String, trim: true, maxlength: 500 },
-        startTime: { type: Date, required: true },
-        endTime: { type: Date, required: true },
+        startTime: { type: Number, required: true },
+        endTime: { type: Number, required: true },
+        image: { type: String, trim: true },
+        mainChain: { type: String, trim: true },
         hasEnded: { type: Boolean, default: false },
+        supportedChains: [{ type: String, trim: true }],
         totalVotes: { type: Number, default: 0 },
     },
     {
@@ -30,6 +40,6 @@ const proposalSchema: Schema<ProposalDocument> = new Schema(
 );
 
 // Create the Proposal model or use the existing one
-const ProposalModel: Model<ProposalDocument> = models?.Proposal || mongoose.model<ProposalDocument>('Proposal', proposalSchema);
+const ProposalModel: Model<ProposalDocument> = models.Proposal || mongoose.model<ProposalDocument>('Proposal', proposalSchema);
 
 export default ProposalModel;

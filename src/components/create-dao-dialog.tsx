@@ -6,7 +6,7 @@ import { CreateDaoForm } from "./create-dao-form";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
-export function CreateDaoDialog() {
+export function CreateDaoDialog({ refreshList }: { refreshList: any }) {
     const [isOpen, setIsOpen] = useState(false);  // State to control dialog visibility
 
     const closeDialog = () => {
@@ -23,7 +23,7 @@ export function CreateDaoDialog() {
 
                 </DialogHeader>
                 <div className="overflow-y-scroll h-5/6">
-                    <CreateDaoForm closeDialog={closeDialog} />
+                    <CreateDaoForm closeDialog={closeDialog} refreshList={refreshList} />
                 </div>
             </DialogContent>
         </Dialog>

@@ -9,20 +9,73 @@ import {
 } from "@/components/page-header"
 import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/config/site";
+import { useEffect, useState } from "react";
+import { IProposal } from "@/model/proposal.model";
+import { IDao } from "@/model/dao.model";
+import ApiWrapper from "@/lib/ApiWrapper";
+import { CardList } from "@/components/card-list";
 
 
 export default function Home() {
+
+  const [loading, setLoading] = useState(false)
+  const apiw = ApiWrapper.create();
+  const [proposals, setProposals] = useState<IProposal[]>()
+  const [daos, setDaos] = useState<IDao[]>()
+
+  const refreshDaoList = async () => {
+    setLoading(true)
+    try {
+      await apiw.get('dao').then((data: any) => {
+        console.log("THIS IS THE DAO", data)
+        const _daos = data.daos as IDao[];
+        const limitedDaos = _daos.slice(0, 4);
+        setDaos(limitedDaos)
+      });
+    } catch (error) {
+      console.log("THIS IS THE ERROR", error)
+    } finally { setLoading(false) }
+  };
+
+
+  const refreshProposalList = async () => {
+    setLoading(true);
+    try {
+      // Fetch proposals from the API
+      await apiw.get('proposal').then((data: any) => {
+        const _proposals = data.proposals as IProposal[];
+
+        // Limit the proposals to the first 3
+        const limitedProposals = _proposals.slice(0, 4);
+
+        console.log("THIS IS THE PROPOSAL", limitedProposals);
+        setProposals(limitedProposals);
+      });
+    } catch (error) {
+      console.log("THIS IS THE ERROR", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    refreshProposalList();
+    refreshDaoList();
+  }, []);
+
+  const proposalList = { name: "Explore recent proposals", type: "proposal", items: proposals }
+  const daoList = { name: "These are our top Daos", type: "dao", items: daos }
   return (
-    <div className="container relative">
+
+    <div className="container relative pb-[10rem]">
       <PageHeader>
-        {/* <Announcement /> */}
         <PageHeaderHeading>Cross-Chain Decentralized Voting</PageHeaderHeading>
         <PageHeaderDescription>
-          Join the future of decentralized decision-making. Our cross-chain voting platform leverages LayerZero, Sign Protocol, and Tableland to ensure secure, transparent, and verifiable governance on any blockchain. Connect your wallet, explore proposals, and make your voice heard in the decentralized world.
+          Join the future of decentralized decision-making. Our cross-chain voting platform leverages Chainlink CCIP and Sign Protocol to ensure secure, transparent, and verifiable governance on any blockchain. Connect your wallet, explore proposals, and make your voice heard in the decentralized world.
         </PageHeaderDescription>
         <PageActions>
           <Button asChild size="sm">
-            <Link href="/docs">Get Started</Link>
+            <Link href="/dao">Get Started</Link>
           </Button>
           <Button asChild size="sm" variant="ghost">
             <Link
@@ -35,28 +88,10 @@ export default function Home() {
           </Button>
         </PageActions>
       </PageHeader>
-      {/* <ExamplesNav className="[&>a:first-child]:text-primary" /> */}
-      <section className="overflow-hidden rounded-lg border bg-background shadow-md md:hidden md:shadow-xl">
-        <Image
-          src="/examples/mail-dark.png"
-          width={1280}
-          height={727}
-          alt="Mail"
-          className="hidden dark:block"
-        />
-        <Image
-          src="/examples/mail-light.png"
-          width={1280}
-          height={727}
-          alt="Mail"
-          className="block dark:hidden"
-        />
-      </section>
-      <section className="hidden md:block">
-        <div className="overflow-hidden rounded-lg border bg-background shadow">
-          {/* <MailPage /> */}
-        </div>
-      </section>
+      <div className="flex flex-col gap-10">
+        <CardList list={proposalList} loading={loading} />
+        <CardList list={daoList} loading={loading} />
+      </div>
     </div>
 
   );

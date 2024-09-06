@@ -26,24 +26,39 @@ export default async function handler(
 
 async function getAllProposals(req: NextApiRequest, res: NextApiResponse) {
     const allProposals = await ProposalModel.find();
-    return res.status(200).json({ users: allProposals });
+    console.log("ALL PROPOSALS", allProposals);
+    return res.status(200).json({ proposals: allProposals });
 }
 
 async function createProposal(req: NextApiRequest, res: NextApiResponse) {
-    const proposal = new ProposalModel;
-    proposal.name = req.body.name;
-    proposal.description = req.body.description;
-    proposal._id = new mongoose.Types.ObjectId();
-    proposal.startTime = req.body.startTime;
-    proposal.endTime = req.body.endTime;
-    proposal.hasEnded = req.body.hasEnded;
+    console.log("THIS IS THE BODY", req.body);
+    const { description, name, onChainID, startTime, endTime, mainChain, hasEnded, supportedChains, totalVotes, image, ownerAddress } = req.body
+    // Validate required fields
+    if (!name || !onChainID || !startTime || !endTime || !ownerAddress) {
+        return res.status(400).json({ message: "Missing required fields" });
+    }
 
+    const proposal = new ProposalModel({
+        name,
+        description,
+        startTime: new Date(startTime),  // Assuming startTime is a timestamp
+        endTime: new Date(endTime),      // Assuming endTime is a timestamp
+        mainChain,
+        onChainID,
+        ownerAddress,
+        image,
+        hasEnded: false,
+        supportedChains,
+        totalVotes: 0  // Default to 0 if not provided
+    });
+
+    console.log("THIS IS THE PROPOSAL BEFORE SAVING", proposal);
 
     try {
         const savedProposal = await proposal.save();
         return res.status(201).json({ proposal: savedProposal });
     } catch (e: any) {
+        console.error(e);
         return res.status(400).json({ message: e.message });
     }
-
 }

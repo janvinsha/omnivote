@@ -1,38 +1,45 @@
-import Image from "next/image"
-import Link from "next/link"
-import { Inter } from "next/font/google";
 import {
-    PageActions,
     PageHeader,
     PageHeaderDescription,
     PageHeaderHeading,
 } from "@/components/page-header"
 
-import { siteConfig } from "@/config/site";
 import { CardList } from "@/components/card-list";
 import { CreateDaoDialog } from "@/components/create-dao-dialog";
 import ApiWrapper from "@/lib/ApiWrapper";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { IDao } from "@/model/dao.model";
 
 export default function Dao() {
-
+    const [daos, setDaos] = useState<IDao[]>()
+    const [loading, setLoading] = useState(false)
     const apiw = ApiWrapper.create();
     const refreshDaoList = async () => {
-        await apiw.get('proposals').then((data: any) => {
-        });
+        setLoading(true)
+        try {
+            await apiw.get('dao').then((data: any) => {
+                console.log("THIS IS THE DAO", data)
+                const daos = data.daos as IDao[];
+                setDaos(daos)
+            });
+        } catch (error) {
+            console.log("THIS IS THE ERROR", error)
+        } finally { setLoading(false) }
     };
 
     useEffect(() => {
         refreshDaoList();
     }, []);
+
+    const list = { name: "Daos", type: "dao", items: daos }
     return (
-        <div className="container relative">
+        <div className="container relative pb-[10rem]">
             <PageHeader>
                 {/* <Announcement /> */}
 
                 <div className="flex justify-between w-full items-start" >
                     <PageHeaderHeading>Explore DAOs</PageHeaderHeading>
-                    <><CreateDaoDialog /></>
+                    <><CreateDaoDialog refreshList={refreshDaoList} /></>
                 </div>
                 <PageHeaderDescription>
                     Explore DAOs in OmniVote
@@ -55,7 +62,7 @@ export default function Dao() {
             {/* <ExamplesNav className="[&>a:first-child]:text-primary" /> */}
             <div>
                 <div>
-                    <CardList />
+                    <CardList list={list} loading={loading} />
                 </div>
             </div>
         </div>
