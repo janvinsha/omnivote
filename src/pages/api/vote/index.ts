@@ -25,19 +25,15 @@ export default async function handler(
 
 async function getAllVotes(req: NextApiRequest, res: NextApiResponse) {
     const { proposalId, attester } = req.query;
-    console.log("THIS IS THE QUERY");
-    let query = {};
-    if (proposalId) query.proposalId = proposalId;
-    if (attester) query.attester = attester;
+    let query: { proposalId?: string; attester?: string } = {};
+    if (proposalId) query.proposalId = proposalId as string;
+    if (attester) query.attester = attester as string;
     const allVotes = await VoteModel.find(query);
-    console.log("ALL VOTES", allVotes);
     return res.status(200).json({ votes: allVotes });
 }
 
 async function createVote(req: NextApiRequest, res: NextApiResponse) {
     const { attestationId, proposalId, attester, proposalAddress } = req.body
-    console.log("THIS IS THE CREATE VOTE", attestationId, proposalId, attester, proposalAddress);
-
     // Validate required fields
     if (!attestationId || !proposalId || !attester || !proposalAddress) {
         return res.status(400).json({ message: "Missing required fields" });

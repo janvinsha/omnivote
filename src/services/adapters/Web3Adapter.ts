@@ -78,8 +78,10 @@ class Web3Adapter {
                 );
 
                 if (events.length > 0) {
-                    console.log(`${eventName} Event Args:`, events[0]?.args);
-                    return events[0]?.args; // Return the first occurrence of the event
+                    const event = events[0];
+                    if ('args' in event) {
+                        return event.args; // Safely access the args property
+                    }
                 }
 
                 // Wait for the next poll

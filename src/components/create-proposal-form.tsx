@@ -67,14 +67,6 @@ const proposalFormSchema = z.object({
     }),
     endTime: z.date({
         required_error: "End time is required.",
-    }).refine((endTime: any, ctx: any) => {
-        const startTime = ctx?.parent?.startTime; // Access the sibling `startTime` directly
-        if (startTime && endTime <= startTime) {
-            return false;
-        }
-        return true;
-    }, {
-        message: "End time must be after the start time.",
     }),
     dao: z
         .string(),
@@ -104,7 +96,7 @@ export function CreateProposalForm({ closeDialog, refreshList }: { closeDialog: 
     const refreshDaoList = async () => {
         try {
             // Get the address from ethersRPC
-            const address = await ethersRPC.getAccounts(provider);
+            const address = await ethersRPC.getAccounts(provider as any);
             console.log("THESE ARE THE OPTIONS", address);
 
             // Fetch the list of DAOs
@@ -181,7 +173,7 @@ export function CreateProposalForm({ closeDialog, refreshList }: { closeDialog: 
                     transactionResponse[0],
                 image: _banner,
                 ownerAddress: selectedDao?.ownerAddress,
-                mainChain: selectedDao?.mainChain, supportedChains: selectedDao.supportedChains
+                mainChain: selectedDao?.mainChain, supportedChains: selectedDao?.supportedChains
             })
             closeDialog()
             refreshList()

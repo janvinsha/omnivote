@@ -8,4 +8,3 @@ export const baseChainId = "0x14a34"
 
 export const signProtocolEthAddress = ""
 export const signProtocolBaseAddress = ""
-// 0x9a2bdb82b93e1a73ff0362cf8eb20256899e97db67b3d5f5ad7d990389a73457

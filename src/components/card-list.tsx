@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Skeleton } from "./ui/skeleton";
 const imageUrl = "https://ipfs.io/ipfs/QmUUshcrtd7Fj4nMmYB3oYRDXcswpB2gw7ECmokcRqcNMf";
 
-export function CardList({ list, useFilter, navRightComponent, loading }: { list: any, useFilter: any, navRightComponent: any, type: string, loading: boolean }) {
+export function CardList({ list, useFilter, navRightComponent, loading }: { list: any, useFilter?: any, navRightComponent?: any, loading: boolean }) {
     return (
         <div className="rounded-lg shadow-sm ring-1 ring-border">
             <div className="flex items-center p-2 pb-0">

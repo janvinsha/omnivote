@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { baseChainId, baseChainSelector, baseContractAddress, sepoliaChainId, sepoliaChainSelector, sepoliaContractAddress } from "@/data/contracts"
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"

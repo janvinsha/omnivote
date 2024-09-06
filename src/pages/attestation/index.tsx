@@ -32,9 +32,9 @@ export default function Attestation() {
         // const { rows } = await signProtocol.getAllAttestations({ attester: search })
         // setAttestations(rows);
         await apiw.get(`vote?attester=${search}`).then((data: any) => {
-            const _votes = data.votes as IVote[];
+            const _votes: IVote[] = data?.votes;
             console.log("THIS IS THE PROPOSAL", _votes)
-            setAttestations(_votes);
+            setAttestations(_votes as any);
         });
     };
 

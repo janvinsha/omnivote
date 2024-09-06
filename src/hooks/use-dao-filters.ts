@@ -9,7 +9,7 @@ type Config = {
 }
 
 const daoAtom = atomWithStorage<Config>("dao", {
-    format: "hsl",
+    daoFilter: "hsl",
 })
 
 export function useColors() {
@@ -18,7 +18,7 @@ export function useColors() {
 
     return {
         isLoading: !mounted,
-        daoFilter: daoFilter.format,
+        daoFilter: daoFilter,
         setDaoFilter: (daoFilter: any) => setDaoFilter({ daoFilter }),
     }
 }

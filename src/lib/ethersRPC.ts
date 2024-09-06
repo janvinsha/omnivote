@@ -25,17 +25,17 @@ const getAccounts = async (provider: IProvider): Promise<any> => {
         return error;
     }
 }
-const getFees = async (provider: IProvider): Promise<any> => {
-    try {
-        const ethersProvider = new ethers.BrowserProvider(provider);
-        const feeData = await ethersProvider.getFeeData();
-        const maxPriorityFeePerGas = feeData.maxPriorityFeePerGas || ethers.utils.parseUnits('2', 'gwei'); // 2 Gwei fallback
-        const maxFeePerGas = feeData.maxFeePerGas || ethers.utils.parseUnits('30', 'gwei'); // 30 Gwei fallback
-        return { maxPriorityFeePerGas, maxFeePerGas };
-    } catch (error) {
-        return error;
-    }
-}
+// const getFees = async (provider: IProvider): Promise<any> => {
+//     try {
+//         const ethersProvider = new ethers.BrowserProvider(provider);
+//         const feeData = await ethersProvider.getFeeData();
+//         const maxPriorityFeePerGas = feeData.maxPriorityFeePerGas || ethers.utils.parseUnits('2', 'gwei'); // 2 Gwei fallback
+//         const maxFeePerGas = feeData.maxFeePerGas || ethers.utils.parseUnits('30', 'gwei'); // 30 Gwei fallback
+//         return { maxPriorityFeePerGas, maxFeePerGas };
+//     } catch (error) {
+//         return error;
+//     }
+// }
 
 const getBalance = async (provider: IProvider): Promise<string> => {
     try {
@@ -102,4 +102,4 @@ const signMessage = async (provider: IProvider): Promise<any> => {
     }
 }
 
-export default { getChainId, getAccounts, getBalance, sendTransaction, signMessage, getFees };
+export default { getChainId, getAccounts, getBalance, sendTransaction, signMessage };

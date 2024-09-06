@@ -1,60 +1,42 @@
 import {
-    PageActions,
     PageHeader,
     PageHeaderDescription,
     PageHeaderHeading,
 } from "@/components/page-header"
 import { Button } from "@/components/ui/button";
-import { siteConfig } from "@/config/site";
-import { CardList } from "@/components/card-list";
 import ApiWrapper from "@/lib/ApiWrapper";
 import { useEffect, useState } from "react";
-import { CreateProposalDialog } from "@/components/create-proposal-dialog";
 import { IProposal } from "@/model/proposal.model";
 import { useRouter } from "next/router";
 import { getChainConfig, getChainId, getChainName, getChainNameSignProtocol, getChainSelectorCrossChain, getRecieverAddressCrossChain } from "@/lib/utils";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { baseContractAddress, sepoliaContractAddress } from "@/data/contracts";
-
 import Web3Adapter from "@/services/adapters/Web3Adapter";
 import OmnivoteABI from "../../../data/abis/OmnivoteABI.json"
-import { ethers } from "ethers";
 import { useWeb3Auth } from "@web3auth/modal-react-hooks"
 import Image from "next/image";
-import { baseSepoliaChainConfig } from "@/lib/web3AuthProviderProps";
-import { FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/components/ui/use-toast";
 import { AttestationTable } from "@/components/attestation-table";
 import { SignProtocolAdapter } from "@/services/adapters/SignProtocol";
-import { EvmChains } from "@ethsign/sp-sdk";
 import { IVote } from "@/model/vote.model";
 import ethersRPC from "@/lib/ethersRPC";
 import Loader from "@/components/loader";
 
-const list = { name: "Attestations", items: [{ name: "Propsal 1" }, { name: "Proposal 2" }, { name: "Propsal 1" }, { name: "Proposal 2" }, { name: "Propsal 1" }, { name: "Proposal 2" }] }
-
 const imageUrl = "https://ipfs.io/ipfs/QmUUshcrtd7Fj4nMmYB3oYRDXcswpB2gw7ECmokcRqcNMf";
 export default function ProposalDetails() {
     const router = useRouter();
-    const { pathname } = router;
     const { proposalId } = router.query;
     const [loading, setLoading] = useState(false);
     const [voteLoading, setVoteLoading] = useState(false);
-    const { provider, switchChain, status, userInfo, web3Auth, addChain, account } = useWeb3Auth();
+    const { provider, switchChain, web3Auth, addChain } = useWeb3Auth();
 
     const [attestations, setAttestations] = useState()
 
 
-    const [proposal, setProposal] = useState<IProposal>()
+    const [proposal, setProposal] = useState<any>()
     const [chainToVote, setChainToVote] = useState<string>()
 
-    const omnivoteContractList = [{
-        value: sepoliaContractAddress, name: "ETH Sepolia"
-    }, {
-        value: baseContractAddress, name: "Base Sepolia"
-    }]
 
 
     console.log("THIS IS THE PROPOSAL ID", proposal)
@@ -81,7 +63,7 @@ export default function ProposalDetails() {
             await apiw.get(`vote?proposalId=${proposalId}`).then((data: any) => {
                 const _votes = data.votes as IVote[];
                 console.log("THIS IS THE PROPOSAL", _votes)
-                setAttestations(_votes);
+                setAttestations(_votes as any);
             });
         }
     };
@@ -99,7 +81,7 @@ export default function ProposalDetails() {
     }
     const handleVote = async () => {
         setVoteLoading(true)
-        const address = await ethersRPC.getAccounts(provider);
+        const address = await ethersRPC.getAccounts(provider as any);
         const connectedChainId = web3Auth?.options?.chainConfig?.chainId
         // const maxPriorityFeePerGas = "5000000000"; // Max priority fee per gas
         // const maxFeePerGas = "6000000000000"; // Max fee per gas
@@ -110,25 +92,18 @@ export default function ProposalDetails() {
                 await switchChain({ chainId: getChainId(chainToVote as string) })
             }
             if (getChainConfig(chainToVote as string) == getChainConfig(proposal?.mainChain as string)) {
-                console.log("THE SUBMIT VOTE METHOD IS BEING CALLED")
                 const web3Adapter = await Web3Adapter.create(provider, chainToVote as string, OmnivoteABI);
                 await web3Adapter.sendTransaction("submitVote", "VoteSubmitted", proposal?.onChainID, 1);
 
             } else {
-                console.log("THE SUBMIT VOTE METHOD CROSS CHAIN IS BEING CALLED")
                 const web3Adapter = await Web3Adapter.create(provider, chainToVote as string, OmnivoteABI);
                 await web3Adapter.sendTransaction("submitVoteCrossChain", "MessageSent", getChainSelectorCrossChain(chainToVote as string), getRecieverAddressCrossChain(chainToVote as string), proposal?.onChainID as string,
-                    // {
-                    //     maxPriorityFeePerGas,
-                    //     maxFeePerGas
-                    // }
                 );
 
             }
             const signProtocol = new SignProtocolAdapter({ chain: getChainNameSignProtocol(chainToVote as string) })
             const signResponse = await signProtocol.createAttestation({ proposalId: proposal?.onChainID })
-            console.log("THIS IS THR SIGN RESPONSE", signResponse)
-            await apiw.put(`proposal/${proposal?._id}`, {
+            await apiw.put(`proposal/${proposal?._id as string}`, {
                 totalVotes: Number(proposal?.totalVotes) + 1
             })
             await apiw.post("/vote", {
@@ -150,37 +125,6 @@ export default function ProposalDetails() {
             setVoteLoading(false)
         }
     }
-
-
-    // const endVoting = async () => {
-    //     const address = await ethersRPC.getAccounts(provider);
-    //     const connectedChainId = web3Auth?.options?.chainConfig?.chainId
-    //     const maxPriorityFeePerGas = "5000000000"; // Max priority fee per gas
-    //     const maxFeePerGas = "6000000000000"; // Max fee per gas
-    //     try {
-    //         if (connectedChainId != getChainId(proposal?.mainChain as string)) {
-    //             await addChain(getChainConfig(proposal?.mainChain as string))
-    //             await switchChain({ chainId: getChainId(proposal?.mainChain as string) })
-    //         }
-
-    //         const web3Adapter = await Web3Adapter.create(provider, chainToVote as string, OmnivoteABI);
-    //         const transactionResponse = await web3Adapter.sendTransaction("finalizeProposal", "ProposalFinalized", proposal?.onChainID);
-
-    //         await apiw.put("/proposal", {
-    //             hasEnded: true
-    //         })
-    //         toast({
-    //             title: "Successfully ended proposal"
-    //         })
-    //     }
-    //     catch (error) {
-    //         console.log("THIS IS THE ERROR", error)
-    //         toast({
-    //             title: "Error voting",
-    //             variant: "destructive"
-    //         })
-    //     }
-    // }
 
 
     return (
@@ -245,7 +189,7 @@ export default function ProposalDetails() {
                                 <h2>Proposal Supported Chains </h2>
                                 <Input
                                     value={proposal?.supportedChains?.length
-                                        ? proposal.supportedChains.map(chain => getChainName(chain)).join(', ')
+                                        ? proposal.supportedChains.map((chain: any) => getChainName(chain)).join(', ')
                                         : 'No chains chosen'}
                                     disabled />
                             </span>
@@ -260,7 +204,7 @@ export default function ProposalDetails() {
 
 
                             <span className="flex gap-2 md:pt-6 ">
-                                {proposal?.endTime > Date.now() ? <><Select
+                                {proposal?.endTime as number > Date.now() ? <><Select
                                     onValueChange={(value) => handleChainSelect(value)}
                                 >
                                     <SelectTrigger className="md:w-[15rem]">
@@ -268,7 +212,7 @@ export default function ProposalDetails() {
                                     </SelectTrigger>
 
                                     <SelectContent>
-                                        {proposal.supportedChains?.map(chain => ({ value: chain, name: getChainName(chain) })).map((list, key) => <SelectItem value={list.value} key={key}>{list.name}</SelectItem>)}
+                                        {proposal?.supportedChains?.map((chain: any) => ({ value: chain, name: getChainName(chain) })).map((list: any, key: any) => <SelectItem value={list.value} key={key}>{list.name}</SelectItem>)}
                                     </SelectContent>
                                 </Select>
 
@@ -286,7 +230,7 @@ export default function ProposalDetails() {
                             <div className="flex-1 pl-4 text-lg font-medium pt-4">
                                 <h2 className="capitalize">Vote history</h2>
                             </div>
-                            <AttestationTable items={attestations} />
+                            <AttestationTable items={attestations as any} />
                         </div>
 
                     </div>
