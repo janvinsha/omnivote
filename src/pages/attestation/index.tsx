@@ -45,7 +45,7 @@ export default function Attestation() {
     const list = { name: "Attestations", items: [{ name: "Propsal 1" }, { name: "Proposal 2" }, { name: "Propsal 1" }, { name: "Proposal 2" }, { name: "Propsal 1" }, { name: "Proposal 2" }] }
 
     return (
-        <div className="container relative  pb-[10rem]">
+        <div className="container relative pb-[10rem]">
             <PageHeader>
                 {/* <Announcement /> */}
                 <div className="flex justify-between w-full items-start" >
@@ -62,7 +62,7 @@ export default function Attestation() {
             <div>
                 <div className="flex flex-col gap-10 rounded-lg shadow-sm ring-1 ring-border">
 
-                    <div className="flex items-center p-2 pb-0">
+                    <div className="flex flex-col md:flex-row items-center p-2 pb-0">
                         <div className="flex-1 pl-4 text-lg font-medium py-4">
                             <h2 className="capitalize">{list?.name}</h2>
                         </div>
