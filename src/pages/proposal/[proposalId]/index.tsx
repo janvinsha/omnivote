@@ -38,8 +38,6 @@ export default function ProposalDetails() {
     const [chainToVote, setChainToVote] = useState<string>()
 
 
-
-    console.log("THIS IS THE PROPOSAL ID", proposal)
     const apiw = ApiWrapper.create();
     const refreshProposal = async () => {
         setLoading(true)
@@ -47,7 +45,7 @@ export default function ProposalDetails() {
             if (proposalId) {
                 await apiw.get(`proposal/${proposalId}`).then((data: any) => {
                     const _proposal = data.proposal as IProposal;
-                    console.log("THIS IS THE PROPOSAL", _proposal)
+
                     setProposal(_proposal)
                 });
             }
@@ -62,7 +60,7 @@ export default function ProposalDetails() {
         if (proposalId) {
             await apiw.get(`vote?proposalId=${proposalId}`).then((data: any) => {
                 const _votes = data.votes as IVote[];
-                console.log("THIS IS THE PROPOSAL", _votes)
+
                 setAttestations(_votes as any);
             });
         }
@@ -86,7 +84,7 @@ export default function ProposalDetails() {
         // const maxPriorityFeePerGas = "5000000000"; // Max priority fee per gas
         // const maxFeePerGas = "6000000000000"; // Max fee per gas
         try {
-            console.log("THIS IS THE CONNECTED CHAIN ID 1", connectedChainId)
+
             if (connectedChainId != getChainId(chainToVote as string)) {
                 await addChain(getChainConfig(chainToVote as string))
                 await switchChain({ chainId: getChainId(chainToVote as string) })

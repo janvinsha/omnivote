@@ -43,8 +43,6 @@ async function createVote(req: NextApiRequest, res: NextApiResponse) {
         attestationId, proposalId, attester, proposalAddress
     });
 
-    console.log("THIS IS THE VOTE BEFORE SAVING", vote);
-
     try {
         const savedVote = await vote.save();
         return res.status(201).json({ proposal: savedVote });

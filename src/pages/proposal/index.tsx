@@ -23,7 +23,7 @@ export default function Proposal() {
         try {
             await apiw.get('proposal').then((data: any) => {
                 const _proposals = data.proposals as IProposal[];
-                console.log("THIS IS THE PROPOSAL", _proposals)
+
                 setProposals(_proposals)
             });
         } catch (error) {

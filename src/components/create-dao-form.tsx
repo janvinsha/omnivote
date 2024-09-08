@@ -92,14 +92,12 @@ export function CreateDaoForm({ closeDialog, refreshList }: { closeDialog: any, 
                 return;
             }
             let _banner = await uploadFileToIPFS(banner);
-            console.log("THIS IS THE BANNER", _banner)
             if (connectedChainId != getChainId(data.mainChain as string)) {
                 await addChain(getChainConfig(data.mainChain))
                 await switchChain({ chainId: getChainId(data.mainChain as string) })
             }
 
             const transactionResponse = await web3Adapter.sendTransaction("addDao", "DaoAdded", data.name, data.description);
-            console.log("THIS SI THE TRANSACTION RESPONSE", transactionResponse[0])
             await apiw.post('dao', {
                 ...data, image: _banner, onChainID: transactionResponse[0], ownerAddress: transactionResponse[1]
             })
@@ -279,23 +277,21 @@ export function CreateDaoForm({ closeDialog, refreshList }: { closeDialog: any, 
 
 
 
-async function onTestCreateSchema() {
-    try {
-        const signProtocol = new SignProtocolAdapter({ chain: EvmChains.polygonAmoy })
-        const response = await signProtocol.createSchema({
-            name: 'proposalId', type: 'string',
-        })
-        console.log("THIS IS THE RESPONSE", response)
-    } catch (error) {
-        console.log("THIS IS THE ERROR", error)
-    }
-}
-async function onTestCreateAttestation() {
-    try {
-        const signProtocol = new SignProtocolAdapter({ chain: EvmChains.sepolia })
-        const response = await signProtocol.createAttestation({ proposalId: "12345" })
-        console.log("THIS IS THE RESPONSE", response)
-    } catch (error) {
-        console.log("THIS IS THE ERROR", error)
-    }
-}
+// async function onTestCreateSchema() {
+//     try {
+//         const signProtocol = new SignProtocolAdapter({ chain: EvmChains.polygonAmoy })
+//         const response = await signProtocol.createSchema({
+//             name: 'proposalId', type: 'string',
+//         })
+//     } catch (error) {
+//         console.log("THIS IS THE ERROR", error)
+//     }
+// }
+// async function onTestCreateAttestation() {
+//     try {
+//         const signProtocol = new SignProtocolAdapter({ chain: EvmChains.sepolia })
+//         const response = await signProtocol.createAttestation({ proposalId: "12345" })
+//     } catch (error) {
+//         console.log("THIS IS THE ERROR", error)
+//     }
+// }

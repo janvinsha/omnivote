@@ -27,7 +27,6 @@ export default function Home() {
     setLoading(true)
     try {
       await apiw.get('dao').then((data: any) => {
-        console.log("THIS IS THE DAO", data)
         const _daos = data.daos as IDao[];
         const limitedDaos = _daos.slice(0, 4);
         setDaos(limitedDaos)
@@ -47,8 +46,6 @@ export default function Home() {
 
         // Limit the proposals to the first 3
         const limitedProposals = _proposals.slice(0, 4);
-
-        console.log("THIS IS THE PROPOSAL", limitedProposals);
         setProposals(limitedProposals);
       });
     } catch (error) {

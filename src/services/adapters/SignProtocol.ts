@@ -43,7 +43,6 @@ export class SignProtocolAdapter {
         const createSchemaRes = await this.client.createSchema({
             description: "Schema for omnivote votes on sepolia chain",
             registrant: "0x659CE0FC2499E1Fa14d30F5CD88aD058ba490e39",
-            // dataLocation: DataLocation.ONCHAIN,
             name: 'Omnivotes votes schema',
             data: [data],
         });
@@ -51,7 +50,6 @@ export class SignProtocolAdapter {
     }
 
     public async createAttestation(data: any): Promise<any> {
-        console.log("THIS IS THE SCHEMA ID", this.schemaId)
         const createAttestationRes = await this.client.createAttestation({
             schemaId: this.schemaId,
             data,
@@ -63,12 +61,9 @@ export class SignProtocolAdapter {
     public async getAllAttestations(query: {}): Promise<any> {
         const indexService = new IndexService("testnet");
         let _query = {
-            // id: schemaIds.sepolia.id,
-            // schemaId: this.schemaId,
+            schemaId: this.schemaId,
             attester: query?.attester,
             page: 1,
-            // mode: "onchain"
-            // indexingValue: "xxx",
         }
         const retrieveAttestationsRes = await indexService.queryAttestationList(_query);
         return retrieveAttestationsRes;

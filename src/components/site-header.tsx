@@ -16,8 +16,7 @@ import { useWeb3Auth } from "@web3auth/modal-react-hooks"
 
 export function SiteHeader() {
   const { theme } = useTheme()
-  const { initModal, isConnected, web3Auth, connect, logout, provider } = useWeb3Auth()
-  console.log("THIS IS THE PROVIDER", provider)
+  const { initModal, isConnected, web3Auth } = useWeb3Auth()
   const init = async () => {
     try {
       if (!isConnected && web3Auth) {

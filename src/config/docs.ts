@@ -9,8 +9,8 @@ export interface DocsConfig {
 export const docsConfig: DocsConfig = {
   mainNav: [
     {
-      title: "Proposals",
-      href: "/proposals",
+      title: "Proposal",
+      href: "/proposal",
     },
     {
       title: "Dao",

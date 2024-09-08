@@ -26,13 +26,11 @@ export default async function handler(
 
 async function getAllProposals(req: NextApiRequest, res: NextApiResponse) {
     const allProposals = await ProposalModel.find();
-    console.log("ALL PROPOSALS", allProposals);
     return res.status(200).json({ proposals: allProposals });
 }
 
 async function createProposal(req: NextApiRequest, res: NextApiResponse) {
-    console.log("THIS IS THE BODY", req.body);
-    const { description, name, onChainID, startTime, endTime, mainChain, hasEnded, supportedChains, totalVotes, image, ownerAddress } = req.body
+    const { description, name, onChainID, startTime, endTime, mainChain, supportedChains, image, ownerAddress } = req.body
     // Validate required fields
     if (!name || !onChainID || !startTime || !endTime || !ownerAddress) {
         return res.status(400).json({ message: "Missing required fields" });
