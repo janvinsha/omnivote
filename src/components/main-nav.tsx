@@ -22,31 +22,31 @@ export function MainNav() {
       </Link>
       <nav className="flex items-center gap-4 text-md lg:gap-6">
         <Link
-          href="/proposal"
+          href="/proposals"
           className={cn(
             "transition-colors hover:text-foreground/80",
-            pathname === "/proposal" ? "text-foreground" : "text-foreground/60"
+            pathname === "/proposals" ? "text-foreground" : "text-foreground/60"
           )}
         >
-          Proposal
+          Proposals
         </Link>
         <Link
-          href="/dao"
+          href="/daos"
           className={cn(
             "transition-colors hover:text-foreground/80",
-            pathname === "/dao" ? "text-foreground" : "text-foreground/60"
+            pathname === "/daos" ? "text-foreground" : "text-foreground/60"
           )}
         >
-          Dao
+          Daos
         </Link>
         <Link
-          href="/attestation"
+          href="/votes"
           className={cn(
             "transition-colors hover:text-foreground/80",
-            pathname === "/attestation" ? "text-foreground" : "text-foreground/60"
+            pathname === "/votes" ? "text-foreground" : "text-foreground/60"
           )}
         >
-          Attestation
+          Vote
         </Link>
         {/* <Link
           href="/create"

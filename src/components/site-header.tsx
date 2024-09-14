@@ -3,6 +3,7 @@ import Link from "next/link"
 import { siteConfig } from "@/config/site"
 import { useTheme } from "next-themes"
 import { cn } from "@/lib/utils"
+
 // import { Icons } from "@/components/icons"
 import { MainNav } from "@/components/main-nav"
 import { MobileNav } from "@/components/mobile-nav"
@@ -12,25 +13,10 @@ import { CommandMenu } from "./command-menu"
 import { UserNav } from "./user-nav"
 import Image from "next/image"
 import { useEffect } from "react"
-import { useWeb3Auth } from "@web3auth/modal-react-hooks"
 
 export function SiteHeader() {
   const { theme } = useTheme()
-  const { initModal, isConnected, web3Auth } = useWeb3Auth()
-  const init = async () => {
-    try {
-      if (!isConnected && web3Auth) {
-        await initModal();
-      }
-    } catch (error) {
-      console.log(error)
-    }
-  }
-  useEffect(
-    () => {
-      init()
-    }, [isConnected, web3Auth]
-  )
+
   return (
     <header className="sticky top-0 z-50 w-full border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-20 max-w-screen-2xl items-center">

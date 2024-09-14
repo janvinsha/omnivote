@@ -25,7 +25,7 @@ export default async function handler(
 }
 
 async function getAllProposals(req: NextApiRequest, res: NextApiResponse) {
-    const allProposals = await ProposalModel.find();
+    const allProposals = await ProposalModel.find().sort({ createdAt: -1 });
     return res.status(200).json({ proposals: allProposals });
 }
 

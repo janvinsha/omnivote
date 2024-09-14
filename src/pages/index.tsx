@@ -68,7 +68,7 @@ export default function Home() {
       <PageHeader>
         <PageHeaderHeading>Cross-Chain Decentralized Voting</PageHeaderHeading>
         <PageHeaderDescription>
-          Join the future of decentralized decision-making. Our cross-chain voting platform leverages Chainlink CCIP and Sign Protocol to ensure secure, transparent, and verifiable governance on any blockchain. Connect your wallet, explore proposals, and make your voice heard in the decentralized world.
+          Join the future of decentralized decision-making. Our cross-chain voting platform leverages Chainlink CCIP to ensure secure, transparent, and verifiable governance on any blockchain. Connect your wallet, explore proposals, and make your voice heard in the decentralized world.
         </PageHeaderDescription>
         <PageActions>
           <Button asChild size="sm">

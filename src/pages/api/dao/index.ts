@@ -25,7 +25,7 @@ export default async function handler(
 }
 
 async function getAllDaos(req: NextApiRequest, res: NextApiResponse) {
-    const allDaos = await DaoModel.find();
+    const allDaos = await DaoModel.find().sort({ createdAt: -1 });
     return res.status(200).json({ daos: allDaos });
 }
 
