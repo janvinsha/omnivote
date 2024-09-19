@@ -60,8 +60,8 @@ export default function Home() {
     refreshDaoList();
   }, []);
 
-  const proposalList = { name: "Explore recent proposals", type: "proposal", items: proposals }
-  const daoList = { name: "These are our top Daos", type: "dao", items: daos }
+  const proposalList = { name: "Explore recent proposals", type: "proposals", items: proposals }
+  const daoList = { name: "These are our top Daos", type: "daos", items: daos }
   return (
 
     <div className="container relative pb-[10rem]">

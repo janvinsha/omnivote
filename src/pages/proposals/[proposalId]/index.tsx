@@ -90,8 +90,7 @@ export default function ProposalDetails() {
                 await switchChain(config, { chainId: getChainId(chainToVote as string) })
             }
             if (getChainConfig(chainToVote as string) == getChainConfig(proposal?.mainChain as string)) {
-                //     const web3Adapter = await Web3Adapter.create(provider, chainToVote as string, OmnivoteABI);
-                //     await web3Adapter.sendTransaction("submitVote", "VoteSubmitted", proposal?.onChainID, 1);
+
                 await writeContract(config, {
                     abi: OmnivoteABI,
                     address: proposal?.mainChain as any,
@@ -102,9 +101,7 @@ export default function ProposalDetails() {
                 })
 
             } else {
-                // const web3Adapter = await Web3Adapter.create(provider, chainToVote as string, OmnivoteABI);
-                // await web3Adapter.sendTransaction("submitVoteCrossChain", "MessageSent", getChainSelectorCrossChain(chainToVote as string), getRecieverAddressCrossChain(chainToVote as string), proposal?.onChainID as string,
-                // );
+
                 await writeContract(config, {
                     abi: OmnivoteABI,
                     address: chainToVote as any,

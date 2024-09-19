@@ -28,7 +28,7 @@ async function getAllVotes(req: NextApiRequest, res: NextApiResponse) {
     let query: { proposalId?: string; voter?: string } = {};
     if (proposalId) query.proposalId = proposalId as string;
     if (voter) query.voter = voter as string;
-    const allVotes = await VoteModel.find(query);
+    const allVotes = (await VoteModel.find(query).sort({ createdAt: -1 }))
     return res.status(200).json({ votes: allVotes });
 }
 

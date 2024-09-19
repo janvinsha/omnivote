@@ -15,7 +15,7 @@ export function MainNav() {
   return (
     <div className="mr-4 hidden md:flex">
       <Link href="/" className="mr-4 flex items-center space-x-2 lg:mr-6">
-        <Image src={theme === "dark" ? "blackLogo.svg" : "logo.svg"} alt="logo" className="h-7 w-7" width={100} height={100} />
+        <img src={theme === "dark" ? "blackLogo.svg" : "logo.svg"} alt="logo" className="h-7 w-7" width={100} height={100} />
         <span className="hidden text-lg font-bold lg:inline-block">
           {siteConfig.name}
         </span>

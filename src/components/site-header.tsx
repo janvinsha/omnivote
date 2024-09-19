@@ -25,7 +25,7 @@ export function SiteHeader() {
         <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
           <div className="w-full flex-1 md:w-auto md:flex-none md:hidden flex">
             <Link href="/" className="mr-4 flex items-center space-x-2 lg:mr-6">
-              <Image src={theme === "light" ? "logo.svg" : "blackLogo.svg"} alt="logo" className="h-7 w-7" width={100} height={100} />
+              <img src={theme === "light" ? "logo.svg" : "blackLogo.svg"} alt="logo" className="h-7 w-7" width={100} height={100} />
               <span className="font-bold inline-block">
                 {siteConfig.name}
               </span>
