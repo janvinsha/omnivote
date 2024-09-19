@@ -1,6 +1,6 @@
 
 # OmniVote
-OmniVote is a decentralized voting platform that allows users to create and manage proposals across multiple blockchain networks seamlessly. By leveraging Chainlink's Cross-Chain Interoperability Protocol (CCIP), OmniVote enables smart contracts on different blockchains to communicate with each other, ensuring a truly omnichain governance experience. OmniVote uses Sign Protocol for attestations and stores proposal, DAO, and vote data in MongoDB. The platform supports decentralized identity and cross-chain governance to provide secure, tamper-proof voting.
+OmniVote is a decentralized voting platform that allows users to create and manage proposals across multiple blockchain networks seamlessly. By leveraging Chainlink's Cross-Chain Interoperability Protocol (CCIP), OmniVote enables smart contracts on different blockchains to communicate with each other, ensuring a truly omnichain governance experience. The platform supports decentralized identity and cross-chain governance to provide secure, tamper-proof voting.
 
 ## Features:
 Cross-Chain Voting: Seamless communication between smart contracts deployed on different blockchains using Chainlink CCIP.

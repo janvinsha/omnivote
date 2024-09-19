@@ -1,30 +1,26 @@
 import {
-    PageActions,
     PageHeader,
     PageHeaderDescription,
     PageHeaderHeading,
 } from "@/components/page-header"
-import { Button } from "@/components/ui/button";
-import { siteConfig } from "@/config/site";
+
 import { CardList } from "@/components/card-list";
+import { CreateDaoDialog } from "@/components/create-dao-dialog";
 import ApiWrapper from "@/lib/ApiWrapper";
 import { useEffect, useState } from "react";
-import { CreateProposalDialog } from "@/components/create-proposal-dialog";
-import { IProposal } from "@/model/proposal.model";
+import { IDao } from "@/model/dao.model";
 
-
-export default function Proposal() {
-
-    const [proposals, setProposals] = useState<IProposal[]>()
+export default function Dao() {
+    const [daos, setDaos] = useState<IDao[]>()
     const [loading, setLoading] = useState(false)
     const apiw = ApiWrapper.create();
-    const refreshProposalList = async () => {
+    const refreshDaoList = async () => {
         setLoading(true)
         try {
-            await apiw.get('proposal').then((data: any) => {
-                const _proposals = data.proposals as IProposal[];
-
-                setProposals(_proposals)
+            await apiw.get('dao').then((data: any) => {
+                console.log("THIS IS THE DAO", data)
+                const daos = data.daos as IDao[];
+                setDaos(daos)
             });
         } catch (error) {
             console.log("THIS IS THE ERROR", error)
@@ -32,21 +28,21 @@ export default function Proposal() {
     };
 
     useEffect(() => {
-        refreshProposalList();
+        refreshDaoList();
     }, []);
 
-    const list = { name: "Proposals", type: "proposal", items: proposals }
-
+    const list = { name: "Daos", type: "daos", items: daos }
     return (
-        <div className="container relative  pb-[10rem]">
+        <div className="container relative pb-[10rem]">
             <PageHeader>
                 {/* <Announcement /> */}
+
                 <div className="flex justify-between w-full items-start" >
-                    <PageHeaderHeading>Explore Proposals</PageHeaderHeading>
-                    <><CreateProposalDialog refreshList={refreshProposalList} /></>
+                    <PageHeaderHeading>Explore DAOs</PageHeaderHeading>
+                    <><CreateDaoDialog refreshList={refreshDaoList} /></>
                 </div>
                 <PageHeaderDescription>
-                    Explore Proposals in OmniVote
+                    Explore DAOs in OmniVote
                 </PageHeaderDescription>
                 {/* <PageActions>
                     <Button asChild size="sm">
@@ -64,11 +60,11 @@ export default function Proposal() {
                 </PageActions> */}
             </PageHeader>
             {/* <ExamplesNav className="[&>a:first-child]:text-primary" /> */}
-
             <div>
-                <CardList list={list} loading={loading} />
+                <div>
+                    <CardList list={list} loading={loading} />
+                </div>
             </div>
-
         </div>
 
     );

@@ -30,6 +30,9 @@ import { Checkbox } from "./ui/checkbox";
 import { uploadFileToIPFS } from "@/services/adapters/IPFSAdapter";
 import Loader from "./loader";
 import { getChainConfig, getChainId } from "@/lib/utils";
+import { useAccount } from 'wagmi'
+import { switchChain, writeContract, watchContractEvent } from '@wagmi/core'
+import { config } from "@/config/wagmiConfig";
 
 const profileFormSchema = z.object({
     name: z
@@ -58,8 +61,7 @@ const defaultValues: Partial<ProfileFormValues> = {
 
 export function CreateDaoForm({ closeDialog, refreshList }: { closeDialog: any, refreshList: any }) {
     const apiw = ApiWrapper.create();
-    const { userInfo, provider, web3Auth, switchChain, status, addChain } = useWeb3Auth();
-    const connectedChainId = web3Auth?.options?.chainConfig?.chainId
+    const { address, chainId: connectedChainId } = useAccount()
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const omnivoteContractList = [{
@@ -79,7 +81,7 @@ export function CreateDaoForm({ closeDialog, refreshList }: { closeDialog: any, 
     async function onSubmit(data: ProfileFormValues) {
         setIsSubmitting(true);
         try {
-            const web3Adapter = await Web3Adapter.create(provider, data.mainChain, OmnivoteABI);
+
             if (!banner) {
                 toast({
                     title: "Please upload a banner",
@@ -92,14 +94,46 @@ export function CreateDaoForm({ closeDialog, refreshList }: { closeDialog: any, 
                 return;
             }
             let _banner = await uploadFileToIPFS(banner);
+            console.log("THIS IS THE CHAIN", getChainId(data.mainChain as string))
             if (connectedChainId != getChainId(data.mainChain as string)) {
-                await addChain(getChainConfig(data.mainChain))
-                await switchChain({ chainId: getChainId(data.mainChain as string) })
+                await switchChain(config, { chainId: getChainId(data.mainChain as string) })
             }
+            // const web3Adapter = await Web3Adapter.create(provider, data.mainChain, OmnivoteABI);
+            // const transactionResponse = await web3Adapter.sendTransaction("addDao", "DaoAdded", data.name, data.description);
 
-            const transactionResponse = await web3Adapter.sendTransaction("addDao", "DaoAdded", data.name, data.description);
+
+            await writeContract(config, {
+                abi: OmnivoteABI,
+                address: data.mainChain as any,
+                functionName: 'addDao',
+                args: [
+                    data.name, data.description
+                ],
+            })
+
+            const resultWatch: any = await new Promise((resolve, reject) => {
+                try {
+                    watchContractEvent(
+                        config,
+                        {
+                            abi: OmnivoteABI,
+                            address: data.mainChain as any,
+                            eventName: 'DaoAdded',
+                            onLogs(logs) {
+                                console.log('New logs!', logs);
+                                resolve(logs); // Resolves the promise when the logs are received
+                            },
+                            poll: true
+                        }
+                    )
+                } catch (error) {
+                    reject(error)
+                }
+            });
+
+            console.log("RESULT FROM ADDING DAO", resultWatch[0]?.topics)
             await apiw.post('dao', {
-                ...data, image: _banner, onChainID: transactionResponse[0], ownerAddress: transactionResponse[1]
+                ...data, image: _banner, onChainID: resultWatch[0]?.topics?.[0] as string, ownerAddress: address
             })
             closeDialog()
             refreshList()

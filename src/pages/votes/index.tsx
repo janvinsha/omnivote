@@ -24,17 +24,17 @@ import { IVote } from "@/model/vote.model";
 
 
 export default function Attestation() {
-    const [attestations, setAttestations] = useState()
+    const [votes, setVotes] = useState()
     const [search, setSearch] = useState("");
     const apiw = ApiWrapper.create();
     const refreshAttestationList = async () => {
         // const signProtocol = new SignProtocolAdapter({ chain: EvmChains.sepolia })
-        // const { rows } = await signProtocol.getAllAttestations({ attester: search })
-        // setAttestations(rows);
+        // const { rows } = await signProtocol.getAllvotes({ attester: search })
+        // setVotes(rows);
         await apiw.get(`vote?attester=${search}`).then((data: any) => {
             const _votes: IVote[] = data?.votes;
             console.log("THIS IS THE PROPOSAL", _votes)
-            setAttestations(_votes as any);
+            setVotes(_votes as any);
         });
     };
 
@@ -42,18 +42,18 @@ export default function Attestation() {
         refreshAttestationList();
     }, [search]);
 
-    const list = { name: "Attestations", items: [{ name: "Propsal 1" }, { name: "Proposal 2" }, { name: "Propsal 1" }, { name: "Proposal 2" }, { name: "Propsal 1" }, { name: "Proposal 2" }] }
+    const list = { name: "Votes", items: [{ name: "Propsal 1" }, { name: "Proposal 2" }, { name: "Propsal 1" }, { name: "Proposal 2" }, { name: "Propsal 1" }, { name: "Proposal 2" }] }
 
     return (
         <div className="container relative pb-[10rem]">
             <PageHeader>
                 {/* <Announcement /> */}
                 <div className="flex justify-between w-full items-start" >
-                    <PageHeaderHeading>Query Attestations</PageHeaderHeading>
+                    <PageHeaderHeading>Query Votes</PageHeaderHeading>
 
                 </div>
                 <PageHeaderDescription>
-                    Query Attestations on Sign protocol by the attesters address
+                    Query Votes by the voters address
                 </PageHeaderDescription>
 
             </PageHeader>
@@ -76,7 +76,7 @@ export default function Attestation() {
                     </div>
 
                     <div>
-                        <AttestationTable items={attestations || []} />
+                        <AttestationTable items={votes || []} />
                     </div>
                 </div>
 

@@ -15,23 +15,21 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu"
+
+
 import { useWeb3Auth } from "@web3auth/modal-react-hooks";
+import { useAccount, useDisconnect } from 'wagmi'
+import { ConnectWalletDialog } from "./wallet-connect-dialog";
 
 
 export function UserNav() {
-  const { connect, logout, isConnected, web3Auth } = useWeb3Auth()
-  const logo = web3Auth?.options?.chainConfig?.logo
-  const connectedNetwork = web3Auth?.options?.chainConfig?.displayName
-  const login = async () => {
-    try {
-      await connect()
-    } catch (error) {
-      console.log(error)
-    }
-  }
+
+  const { chain, isConnected } = useAccount()
+  const { disconnect } = useDisconnect()
+
   const signOut = async () => {
     try {
-      await logout()
+      await disconnect()
     } catch (error) {
     }
   }
@@ -51,7 +49,7 @@ export function UserNav() {
             <div className="flex flex-col space-y-1">
               <p className="text-sm font-medium leading-none"></p>
               <p className="text-xs leading-none text-muted-foreground">
-                {connectedNetwork}
+                {chain?.name}
               </p>
             </div>
           </DropdownMenuLabel>
@@ -64,8 +62,6 @@ export function UserNav() {
         </DropdownMenuContent>
       </DropdownMenu >
       :
-      <Button className="cursor-pointer" onClick={login} size="sm" variant="outline">
-        Connect Wallet
-      </Button>
+      <ConnectWalletDialog />
   )
 }

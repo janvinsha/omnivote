@@ -22,6 +22,10 @@ import { SignProtocolAdapter } from "@/services/adapters/SignProtocol";
 import { IVote } from "@/model/vote.model";
 import ethersRPC from "@/lib/ethersRPC";
 import Loader from "@/components/loader";
+import { useAccount } from 'wagmi'
+import { uploadFileToIPFS } from "@/services/adapters/IPFSAdapter";
+import { switchChain, writeContract, watchContractEvent } from '@wagmi/core'
+import { config } from "@/config/wagmiConfig";
 
 const imageUrl = "https://ipfs.io/ipfs/QmUUshcrtd7Fj4nMmYB3oYRDXcswpB2gw7ECmokcRqcNMf";
 export default function ProposalDetails() {
@@ -29,7 +33,8 @@ export default function ProposalDetails() {
     const { proposalId } = router.query;
     const [loading, setLoading] = useState(false);
     const [voteLoading, setVoteLoading] = useState(false);
-    const { provider, switchChain, web3Auth, addChain } = useWeb3Auth();
+
+    const { address, chainId: connectedChainId } = useAccount()
 
     const [attestations, setAttestations] = useState()
 
@@ -56,7 +61,7 @@ export default function ProposalDetails() {
         }
     };
 
-    const refreshAttestationList = async () => {
+    const refreshVotesList = async () => {
         if (proposalId) {
             await apiw.get(`vote?proposalId=${proposalId}`).then((data: any) => {
                 const _votes = data.votes as IVote[];
@@ -70,7 +75,7 @@ export default function ProposalDetails() {
     useEffect(() => {
 
         refreshProposal();
-        refreshAttestationList()
+        refreshVotesList()
 
     }, [proposalId]);
 
@@ -79,39 +84,45 @@ export default function ProposalDetails() {
     }
     const handleVote = async () => {
         setVoteLoading(true)
-        const address = await ethersRPC.getAccounts(provider as any);
-        const connectedChainId = web3Auth?.options?.chainConfig?.chainId
-        // const maxPriorityFeePerGas = "5000000000"; // Max priority fee per gas
-        // const maxFeePerGas = "6000000000000"; // Max fee per gas
         try {
 
             if (connectedChainId != getChainId(chainToVote as string)) {
-                await addChain(getChainConfig(chainToVote as string))
-                await switchChain({ chainId: getChainId(chainToVote as string) })
+                await switchChain(config, { chainId: getChainId(chainToVote as string) })
             }
             if (getChainConfig(chainToVote as string) == getChainConfig(proposal?.mainChain as string)) {
-                const web3Adapter = await Web3Adapter.create(provider, chainToVote as string, OmnivoteABI);
-                await web3Adapter.sendTransaction("submitVote", "VoteSubmitted", proposal?.onChainID, 1);
+
+                await writeContract(config, {
+                    abi: OmnivoteABI,
+                    address: proposal?.mainChain as any,
+                    functionName: 'submitVote',
+                    args: [
+                        proposal?.onChainID, 1
+                    ],
+                })
 
             } else {
-                const web3Adapter = await Web3Adapter.create(provider, chainToVote as string, OmnivoteABI);
-                await web3Adapter.sendTransaction("submitVoteCrossChain", "MessageSent", getChainSelectorCrossChain(chainToVote as string), getRecieverAddressCrossChain(chainToVote as string), proposal?.onChainID as string,
-                );
 
+                await writeContract(config, {
+                    abi: OmnivoteABI,
+                    address: chainToVote as any,
+                    functionName: 'submitVoteCrossChain',
+                    args: [
+                        getChainSelectorCrossChain(chainToVote as string), getRecieverAddressCrossChain(chainToVote as string), proposal?.onChainID as string,
+                    ],
+                })
             }
-            const signProtocol = new SignProtocolAdapter({ chain: getChainNameSignProtocol(chainToVote as string) })
-            const signResponse = await signProtocol.createAttestation({ proposalId: proposal?.onChainID })
             await apiw.put(`proposal/${proposal?._id as string}`, {
                 totalVotes: Number(proposal?.totalVotes) + 1
             })
+            const ipfsHash = await uploadFileToIPFS(JSON.stringify({ proposalId, voter: address, proposalAddress: proposal?.onChainID }));
             await apiw.post("/vote", {
-                attestationId: signResponse.attestationId, proposalId, attester: address, proposalAddress: proposal?.onChainID
+                ipfsHash: ipfsHash, proposalId, voter: address, proposalAddress: proposal?.onChainID
             })
             toast({
                 title: "Successfully voted on this protocol"
             })
             refreshProposal();
-            refreshAttestationList()
+            refreshVotesList()
         }
         catch (error) {
             console.log("THIS IS THE ERROR", error)

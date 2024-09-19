@@ -2,9 +2,9 @@ import mongoose, { Schema, Document, models, Model } from 'mongoose';
 
 // Define the base Vote interface
 export interface IVote {
-    attestationId: string;
+    ipfsHash: string;
     proposalId: string;
-    attester: string;
+    voter: string;
     proposalAddress: string;
 }
 
@@ -16,8 +16,8 @@ const voteSchema: Schema<VoteDocument> = new Schema(
     {
         proposalId: { type: String, required: true },
         proposalAddress: { type: String, required: true },
-        attestationId: { type: String, required: true, trim: true },
-        attester: { type: String, required: true, trim: true },
+        ipfsHash: { type: String, required: true, trim: true },
+        voter: { type: String, required: true, trim: true },
     },
     {
         timestamps: true,  // Automatically manages `createdAt` and `updatedAt`

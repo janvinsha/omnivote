@@ -53,7 +53,7 @@ export function CardList({ list, useFilter, navRightComponent, loading }: { list
                                     />
                                     <span className="flex flex-col">
                                         <h2 className="transition-colors hover:text-foreground/80">
-                                            {list.type == "dao" ? <>{item.name}</> : <Link
+                                            {list.type == "daos" ? <>{item.name}</> : <Link
                                                 href={`/${list.type}/${item._id}`}
                                             >{item.name}</Link>
                                             }
