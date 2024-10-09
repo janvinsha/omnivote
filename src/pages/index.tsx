@@ -1,6 +1,5 @@
-import Image from "next/image"
+
 import Link from "next/link"
-import { Inter } from "next/font/google";
 import {
   PageActions,
   PageHeader,
@@ -68,11 +67,11 @@ export default function Home() {
       <PageHeader>
         <PageHeaderHeading>Cross-Chain Decentralized Voting</PageHeaderHeading>
         <PageHeaderDescription>
-          Join the future of decentralized decision-making. Our cross-chain voting platform leverages Chainlink CCIP and Sign Protocol to ensure secure, transparent, and verifiable governance on any blockchain. Connect your wallet, explore proposals, and make your voice heard in the decentralized world.
+          Join the future of decentralized decision-making. Our cross-chain voting platform leverages Chainlink CCIP to ensure secure, transparent, and verifiable governance on any blockchain. Connect your wallet, explore proposals, and make your voice heard in the decentralized world.
         </PageHeaderDescription>
         <PageActions>
           <Button asChild size="sm">
-            <Link href="/dao">Get Started</Link>
+            <Link href="/daos">Get Started</Link>
           </Button>
           <Button asChild size="sm" variant="ghost">
             <Link

@@ -18,11 +18,11 @@ export function AttestationTable({ items }: { items: any[], }) {
                     <TableRow key={key}>
                         <TableCell>{item?.proposalAddress ? new Date(item.createdAt).toLocaleString() : new Date(Number(item.attestTimestamp)).toLocaleString()}</TableCell>
                         <TableCell>
-                            <AddressWithCopyButton address={item?.proposalAddress || item?.attester} />
+                            <AddressWithCopyButton address={item?.proposalAddress || item?.voter} />
                         </TableCell>
                         <TableCell>{item?.voteType || "Yes"}</TableCell>
                         <TableCell className="text-right">
-                            <AddressWithCopyButton address={item?.attester} />
+                            <AddressWithCopyButton address={item?.voter} />
                         </TableCell>
                     </TableRow>
                 )}

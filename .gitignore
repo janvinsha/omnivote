@@ -33,6 +33,7 @@ yarn-error.log*
 
 # vscode
 .vscode
+/.vscode
 
 # env
 # don't push the environment vars!

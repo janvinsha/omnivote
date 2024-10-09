@@ -15,38 +15,38 @@ export function MainNav() {
   return (
     <div className="mr-4 hidden md:flex">
       <Link href="/" className="mr-4 flex items-center space-x-2 lg:mr-6">
-        <Image src={theme === "dark" ? "blackLogo.svg" : "logo.svg"} alt="logo" className="h-7 w-7" width={100} height={100} />
+        <img src={theme === "dark" ? "blackLogo.svg" : "logo.svg"} alt="logo" className="h-7 w-7" width={100} height={100} />
         <span className="hidden text-lg font-bold lg:inline-block">
           {siteConfig.name}
         </span>
       </Link>
       <nav className="flex items-center gap-4 text-md lg:gap-6">
         <Link
-          href="/proposal"
+          href="/proposals"
           className={cn(
             "transition-colors hover:text-foreground/80",
-            pathname === "/proposal" ? "text-foreground" : "text-foreground/60"
+            pathname === "/proposals" ? "text-foreground" : "text-foreground/60"
           )}
         >
-          Proposal
+          Proposals
         </Link>
         <Link
-          href="/dao"
+          href="/daos"
           className={cn(
             "transition-colors hover:text-foreground/80",
-            pathname === "/dao" ? "text-foreground" : "text-foreground/60"
+            pathname === "/daos" ? "text-foreground" : "text-foreground/60"
           )}
         >
-          Dao
+          Daos
         </Link>
         <Link
-          href="/attestation"
+          href="/votes"
           className={cn(
             "transition-colors hover:text-foreground/80",
-            pathname === "/attestation" ? "text-foreground" : "text-foreground/60"
+            pathname === "/votes" ? "text-foreground" : "text-foreground/60"
           )}
         >
-          Attestation
+          Votes
         </Link>
         {/* <Link
           href="/create"

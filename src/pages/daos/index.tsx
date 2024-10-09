@@ -35,8 +35,6 @@ export default function Dao() {
     return (
         <div className="container relative pb-[10rem]">
             <PageHeader>
-                {/* <Announcement /> */}
-
                 <div className="flex justify-between w-full items-start" >
                     <PageHeaderHeading>Explore DAOs</PageHeaderHeading>
                     <><CreateDaoDialog refreshList={refreshDaoList} /></>
@@ -44,22 +42,8 @@ export default function Dao() {
                 <PageHeaderDescription>
                     Explore DAOs in OmniVote
                 </PageHeaderDescription>
-                {/* <PageActions>
-                    <Button asChild size="sm">
-                        <Link href="/docs">Get Started</Link>
-                    </Button>
-                    <Button asChild size="sm" variant="ghost">
-                        <Link
-                            target="_blank"
-                            rel="noreferrer"
-                            href={siteConfig.links.github}
-                        >
-                            GitHub
-                        </Link>
-                    </Button>
-                </PageActions> */}
+
             </PageHeader>
-            {/* <ExamplesNav className="[&>a:first-child]:text-primary" /> */}
             <div>
                 <div>
                     <CardList list={list} loading={loading} />

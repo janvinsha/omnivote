@@ -44,6 +44,11 @@ import ethersRPC from "@/lib/ethersRPC"
 import { getChainConfig, getChainId } from "@/lib/utils";
 import { SignProtocolAdapter } from "@/services/adapters/SignProtocol";
 import { EvmChains } from "@ethsign/sp-sdk";
+import { useAccount } from 'wagmi'
+import { switchChain, writeContract, watchContractEvent } from '@wagmi/core'
+import { config } from "@/config/wagmiConfig";
+import { TimePickerInput } from "./ui/time-picker-input";
+//TODO: add a better date and time pitcker
 
 const proposalFormSchema = z.object({
     name: z
@@ -51,8 +56,8 @@ const proposalFormSchema = z.object({
         .min(2, {
             message: "Name must be at least 2 characters.",
         })
-        .max(30, {
-            message: "Name must not be longer than 30 characters.",
+        .max(100, {
+            message: "Name must not be longer than 100 characters.",
         }),
     description: z
         .string()
@@ -60,7 +65,7 @@ const proposalFormSchema = z.object({
             message: "Description must be at least 4 characters.",
         })
         .max(500, {
-            message: "Description must not be longer than 160 characters.",
+            message: "Description must not be longer than 500 characters.",
         }),
     startTime: z.date({
         required_error: "Start time is required.",
@@ -87,17 +92,15 @@ const defaultValues: Partial<ProfileFormValues> = {
 
 export function CreateProposalForm({ closeDialog, refreshList }: { closeDialog: any, refreshList: any }) {
     const apiw = ApiWrapper.create();
-    const { provider, userInfo, authenticateUser, status, web3Auth, switchChain, addChain } = useWeb3Auth();
+    const { address, chainId: connectedChainId } = useAccount()
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [banner, setBanner] = useState<any>();
     const [daos, setDaos] = useState<IDao[]>()
     const [selectedDao, setSelectedDao] = useState<any | null>(null);  // Add selectedDao state
-    const connectedChainId = web3Auth?.options?.chainConfig?.chainId
+    const [selectedStartTime, setSelectedStartTime] = useState("00:00");
+    const [selectedEndTime, setSelectedEndTime] = useState("00:00");
     const refreshDaoList = async () => {
         try {
-            // Get the address from ethersRPC
-            const address = await ethersRPC.getAccounts(provider as any);
-
             // Fetch the list of DAOs
             const response = await apiw.get('dao');
             const daos = response.daos as IDao[];
@@ -131,8 +134,6 @@ export function CreateProposalForm({ closeDialog, refreshList }: { closeDialog: 
 
     async function onSubmit(data: ProfileFormValues) {
 
-        // const { maxPriorityFeePerGas, maxFeePerGas } = await ethersRPC.getFees(provider)
-
         setIsSubmitting(true);
         try {
             if (!banner) {
@@ -151,24 +152,53 @@ export function CreateProposalForm({ closeDialog, refreshList }: { closeDialog: 
             const endTime = data.endTime.getTime()
 
             if (connectedChainId != getChainId(selectedDao?.mainChain as string)) {
-                await addChain(getChainConfig(selectedDao?.mainChain as string))
-                await switchChain({ chainId: getChainId(selectedDao?.mainChain as string) })
+                await switchChain(config, { chainId: getChainId(selectedDao?.mainChain as string) })
             }
 
-            const web3Adapter = await Web3Adapter.create(provider, selectedDao?.mainChain as string, OmnivoteABI);
-            //Convert unix timestamp which is in milliseconds to block timestamp which is in seconds or it will not work
-            const transactionResponse = await web3Adapter.sendTransaction("createProposal", "ProposalCreated", data.dao, data.description, startTime / 1000, endTime / 1000, Number(data.quorum)
-                // ,
-                // {
-                //     maxPriorityFeePerGas,
-                //     maxFeePerGas
-                // }
-            );
+            // const web3Adapter = await Web3Adapter.create(provider, selectedDao?.mainChain as string, OmnivoteABI);
+            // //Convert unix timestamp which is in milliseconds to block timestamp which is in seconds or it will not work
+            // const transactionResponse = await web3Adapter.sendTransaction("createProposal", "ProposalCreated", data.dao, data.description, startTime / 1000, endTime / 1000, Number(data.quorum)
+            //     // ,
+            //     // {
+            //     //     maxPriorityFeePerGas,
+            //     //     maxFeePerGas
+            //     // }
+            // );
+
+            await writeContract(config, {
+                abi: OmnivoteABI,
+                address: selectedDao?.mainChain as any,
+                functionName: 'createProposal',
+                args: [
+                    data.dao, data.description, startTime / 1000, endTime / 1000, Number(data.quorum)
+                ],
+            })
+
+            const resultWatch: any = await new Promise((resolve, reject) => {
+                try {
+                    watchContractEvent(
+                        config,
+                        {
+                            abi: OmnivoteABI,
+                            address: selectedDao?.mainChain as any,
+                            eventName: 'ProposalCreated',
+                            onLogs(logs: any) {
+                                console.log('New logs!', logs);
+                                resolve(logs); // Resolves the promise when the logs are received
+                            },
+                            poll: true
+                        }
+                    )
+                } catch (error) {
+                    reject(error)
+                }
+            });
+
 
             await apiw.post('proposal', {
                 ...data, startTime, endTime,
                 onChainID:
-                    transactionResponse[0],
+                    resultWatch[0]?.topics?.[0] as string,
                 image: _banner,
                 ownerAddress: selectedDao?.ownerAddress,
                 daoId: selectedDao?._id as string,
@@ -322,11 +352,11 @@ export function CreateProposalForm({ closeDialog, refreshList }: { closeDialog: 
                                                 variant={"outline"}
                                                 className={cn(
                                                     "w-[240px] pl-3 text-left font-normal",
-                                                    !field.value && "text-muted-foreground"
+                                                    !field?.value && "text-muted-foreground"
                                                 )}
                                             >
-                                                {field.value ? (
-                                                    format(field.value, "PPP")
+                                                {field?.value ? (
+                                                    format(field?.value, "PPP")
                                                 ) : (
                                                     <span>Pick a date</span>
                                                 )}
@@ -356,6 +386,29 @@ export function CreateProposalForm({ closeDialog, refreshList }: { closeDialog: 
                                             }}
                                             initialFocus
                                         />
+                                        <div className="px-4 p-2">
+                                            <input aria-label="Time"
+                                                name="endTime" type="time"
+                                                value={selectedStartTime}
+                                                onChange={(e) => {
+                                                    e.preventDefault()
+                                                    setSelectedStartTime(e.target.value);
+                                                    console.log("THIS SI THE E", e.target.value)
+                                                    if (e.target.value && field.value) {
+                                                        // Combine the selected time with the existing date
+                                                        const [hours, minutes] = e.target.value.split(":").map(Number);
+                                                        const updatedDate = new Date(field.value);
+                                                        updatedDate.setHours(hours, minutes);
+
+                                                        console.log("THIS SI THE UPFATED DATE", updatedDate)
+                                                        // Update the field with the new date and time
+                                                        field.onChange(updatedDate);
+                                                    }
+                                                }
+                                                }
+
+                                                disabled={!field?.value} />
+                                        </div>
                                     </PopoverContent>
                                 </Popover>
                                 <FormDescription>
@@ -378,11 +431,11 @@ export function CreateProposalForm({ closeDialog, refreshList }: { closeDialog: 
                                                 variant={"outline"}
                                                 className={cn(
                                                     "w-[240px] pl-3 text-left font-normal",
-                                                    !field.value && "text-muted-foreground"
+                                                    !field?.value && "text-muted-foreground"
                                                 )}
                                             >
-                                                {field.value ? (
-                                                    format(field.value, "PPP")
+                                                {field?.value ? (
+                                                    format(field?.value, "PPP")
                                                 ) : (
                                                     <span>Pick a date</span>
                                                 )}
@@ -400,6 +453,27 @@ export function CreateProposalForm({ closeDialog, refreshList }: { closeDialog: 
                                             }
                                             initialFocus
                                         />
+                                        <div className="px-4 p-2">
+                                            <input aria-label="Time"
+                                                name="endTime" type="time"
+                                                value={selectedEndTime}
+                                                onChange={(e) => {
+                                                    e.preventDefault()
+                                                    setSelectedEndTime(e.target.value);
+                                                    if (e.target.value && field.value) {
+                                                        // Combine the selected time with the existing date
+                                                        const [hours, minutes] = e.target.value.split(":").map(Number);
+                                                        const updatedDate = new Date(field.value);
+                                                        updatedDate.setHours(hours, minutes);
+
+                                                        // Update the field with the new date and time
+                                                        field.onChange(updatedDate);
+                                                    }
+                                                }
+
+                                                }
+                                                disabled={!field?.value} />
+                                        </div>
                                     </PopoverContent>
                                 </Popover>
                                 <FormDescription>

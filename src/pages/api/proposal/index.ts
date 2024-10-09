@@ -39,6 +39,23 @@ async function getAllProposals(req: NextApiRequest, res: NextApiResponse) {
     });
 
     return res.status(200).json({ proposals });
+    // const currentTime = new Date();
+    // const allProposals = await ProposalModel.aggregate([
+    //     {
+    //         $addFields: {
+    //             isExpired: {
+    //                 $cond: { if: { $lt: ["$endTime", currentTime] }, then: true, else: false }
+    //             }
+    //         }
+    //     },
+    //     {
+    //         $sort: {
+    //             isExpired: 1, // Proposals that are not expired come first
+    //             createdAt: -1 // Sort by creation date for those that are not expired
+    //         }
+    //     }
+    // ]);
+    // return res.status(200).json({ proposals: allProposals });
 }
 
 

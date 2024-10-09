@@ -1,21 +1,15 @@
 import {
-    PageActions,
     PageHeader,
     PageHeaderDescription,
     PageHeaderHeading,
 } from "@/components/page-header"
-import { Button } from "@/components/ui/button";
-import { siteConfig } from "@/config/site";
 import { CardList } from "@/components/card-list";
 import ApiWrapper from "@/lib/ApiWrapper";
 import { useEffect, useState } from "react";
-import { CreateProposalDialog } from "@/components/create-proposal-dialog";
 import { IProposal } from "@/model/proposal.model";
 import { useRouter } from "next/router";
 import { IDao } from "@/model/dao.model";
-import { Input } from "@/components/ui/input";
 import AddressWithCopyButton from "@/components/address-with-copy-button";
-
 
 export default function Proposal() {
 
