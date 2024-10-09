@@ -25,14 +25,27 @@ export default async function handler(
 }
 
 async function getAllProposals(req: NextApiRequest, res: NextApiResponse) {
-    const allProposals = await ProposalModel.find();
-    return res.status(200).json({ proposals: allProposals });
+    const { daoId } = req.query;
+    const filter = daoId ? { daoId } : {};
+    let proposals = await ProposalModel.find(filter).lean();
+    const now = new Date();
+    proposals.sort((a: any, b: any) => {
+        const aUnexpired = a.endTime > now;
+        const bUnexpired = b.endTime > now;
+
+        if (aUnexpired && !bUnexpired) return -1;
+        if (!aUnexpired && bUnexpired) return 1;
+        return a.endTime - b.endTime; // Sort by endtime ascending
+    });
+
+    return res.status(200).json({ proposals });
 }
 
+
 async function createProposal(req: NextApiRequest, res: NextApiResponse) {
-    const { description, name, onChainID, startTime, endTime, mainChain, supportedChains, image, ownerAddress } = req.body
+    const { description, name, onChainID, startTime, endTime, mainChain, supportedChains, image, ownerAddress, daoId } = req.body
     // Validate required fields
-    if (!name || !onChainID || !startTime || !endTime || !ownerAddress) {
+    if (!name || !onChainID || !startTime || !endTime || !ownerAddress || !daoId) {
         return res.status(400).json({ message: "Missing required fields" });
     }
 
@@ -45,6 +58,7 @@ async function createProposal(req: NextApiRequest, res: NextApiResponse) {
         onChainID,
         ownerAddress,
         image,
+        daoId,
         hasEnded: false,
         supportedChains,
         totalVotes: 0  // Default to 0 if not provided

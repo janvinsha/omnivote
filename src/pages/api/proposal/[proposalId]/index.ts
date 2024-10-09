@@ -35,7 +35,7 @@ async function getProposalHandler(req: NextApiRequest, res: NextApiResponse) {
 
 async function updateProposalHandler(req: NextApiRequest, res: NextApiResponse) {
     const { proposalId } = req.query as Record<string, string>;
-    const { totalVotes, hasEnded } = req.body;
+    const { totalVotes, hasEnded, votes } = req.body;
 
     try {
         // Find the proposal by ID
@@ -48,6 +48,10 @@ async function updateProposalHandler(req: NextApiRequest, res: NextApiResponse) 
         // Conditionally update only if values are provided
         if (typeof totalVotes !== 'undefined') {
             proposal.totalVotes = totalVotes;
+        }
+        // Conditionally update only if values are provided
+        if (typeof votes !== 'undefined') {
+            proposal.votes = votes;
         }
 
         if (typeof hasEnded !== 'undefined') {

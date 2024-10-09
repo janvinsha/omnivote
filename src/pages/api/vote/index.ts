@@ -33,14 +33,14 @@ async function getAllVotes(req: NextApiRequest, res: NextApiResponse) {
 }
 
 async function createVote(req: NextApiRequest, res: NextApiResponse) {
-    const { attestationId, proposalId, attester, proposalAddress } = req.body
+    const { attestationId, proposalId, attester, proposalAddress, voteType, voteWeight } = req.body
     // Validate required fields
-    if (!attestationId || !proposalId || !attester || !proposalAddress) {
+    if (!attestationId || !proposalId || !attester || !proposalAddress || !voteType || !voteWeight) {
         return res.status(400).json({ message: "Missing required fields" });
     }
 
     const vote = new VoteModel({
-        attestationId, proposalId, attester, proposalAddress
+        attestationId, proposalId, attester, proposalAddress, voteType, voteWeight
     });
 
     try {

@@ -3,6 +3,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card"
 import { FilterSelector, FilterSkeleton } from "./filter-selector"
 import { getChainImage } from "@/lib/utils";
 import Link from "next/link";
+import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "./ui/skeleton";
 const imageUrl = "https://ipfs.io/ipfs/QmUUshcrtd7Fj4nMmYB3oYRDXcswpB2gw7ECmokcRqcNMf";
 
@@ -36,7 +37,10 @@ export function CardList({ list, useFilter, navRightComponent, loading }: { list
                 </div> : <div className="grid grid-cols-1 md:grid-cols-4 gap-2 p-4">
                     {list?.items?.map((item: any) => (
                         <div key={item.id} className="w-full min-w-[25%] border ring-1 ring-border rounded-lg shadow-sm overflow-hidden">
-                            <div className="text-center">
+                            <div className="text-center relative">
+                                {item?.endTime as number < Date.now() &&
+                                    <Badge variant="destructive" className="absolute right-2 top-2">expired</Badge>
+                                }
                                 <img
                                     src={item.image || imageUrl}
                                     alt={item.name}
@@ -53,10 +57,10 @@ export function CardList({ list, useFilter, navRightComponent, loading }: { list
                                     />
                                     <span className="flex flex-col">
                                         <h2 className="transition-colors hover:text-foreground/80">
-                                            {list.type == "dao" ? <>{item.name}</> : <Link
+                                            <Link
                                                 href={`/${list.type}/${item._id}`}
                                             >{item.name}</Link>
-                                            }
+
                                         </h2>
                                         <h2 className="text-sm text-muted-foreground">{item.description}</h2>
                                     </span>

@@ -6,6 +6,8 @@ export interface IVote {
     proposalId: string;
     attester: string;
     proposalAddress: string;
+    voteType: string;
+    voteWeight: string
 }
 
 // Define the document interface which extends Mongoose's Document
@@ -18,6 +20,12 @@ const voteSchema: Schema<VoteDocument> = new Schema(
         proposalAddress: { type: String, required: true },
         attestationId: { type: String, required: true, trim: true },
         attester: { type: String, required: true, trim: true },
+        voteType: {
+            type: String,
+            enum: ["yes", "no", "abstain"],  // Restricts values to the enum
+            required: true
+        },
+        voteWeight: { type: String, required: true },
     },
     {
         timestamps: true,  // Automatically manages `createdAt` and `updatedAt`

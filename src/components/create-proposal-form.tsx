@@ -91,7 +91,7 @@ export function CreateProposalForm({ closeDialog, refreshList }: { closeDialog: 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [banner, setBanner] = useState<any>();
     const [daos, setDaos] = useState<IDao[]>()
-    const [selectedDao, setSelectedDao] = useState<IDao | null>(null);  // Add selectedDao state
+    const [selectedDao, setSelectedDao] = useState<any | null>(null);  // Add selectedDao state
     const connectedChainId = web3Auth?.options?.chainConfig?.chainId
     const refreshDaoList = async () => {
         try {
@@ -171,6 +171,7 @@ export function CreateProposalForm({ closeDialog, refreshList }: { closeDialog: 
                     transactionResponse[0],
                 image: _banner,
                 ownerAddress: selectedDao?.ownerAddress,
+                daoId: selectedDao?._id as string,
                 mainChain: selectedDao?.mainChain, supportedChains: selectedDao?.supportedChains
             })
             closeDialog()
