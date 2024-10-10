@@ -96,7 +96,7 @@ export function CreateProposalForm({ closeDialog, refreshList }: { closeDialog: 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [banner, setBanner] = useState<any>();
     const [daos, setDaos] = useState<IDao[]>()
-    const [selectedDao, setSelectedDao] = useState<IDao | null>(null);  // Add selectedDao state
+    const [selectedDao, setSelectedDao] = useState<any | null>(null);  // Add selectedDao state
     const [selectedStartTime, setSelectedStartTime] = useState("00:00");
     const [selectedEndTime, setSelectedEndTime] = useState("00:00");
     const refreshDaoList = async () => {
@@ -182,7 +182,7 @@ export function CreateProposalForm({ closeDialog, refreshList }: { closeDialog: 
                             abi: OmnivoteABI,
                             address: selectedDao?.mainChain as any,
                             eventName: 'ProposalCreated',
-                            onLogs(logs) {
+                            onLogs(logs: any) {
                                 console.log('New logs!', logs);
                                 resolve(logs); // Resolves the promise when the logs are received
                             },
@@ -201,6 +201,7 @@ export function CreateProposalForm({ closeDialog, refreshList }: { closeDialog: 
                     resultWatch[0]?.topics?.[0] as string,
                 image: _banner,
                 ownerAddress: selectedDao?.ownerAddress,
+                daoId: selectedDao?._id as string,
                 mainChain: selectedDao?.mainChain, supportedChains: selectedDao?.supportedChains
             })
             closeDialog()
