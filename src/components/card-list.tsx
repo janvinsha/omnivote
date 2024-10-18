@@ -23,6 +23,7 @@ export function CardList({ list, useFilter, navRightComponent, loading }: { list
                         {/* <FilterSelector className="ml-auto" /> */}
                     </React.Suspense>
                 )}
+
             </div>
             {loading ?
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-2 p-4">
@@ -35,8 +36,8 @@ export function CardList({ list, useFilter, navRightComponent, loading }: { list
                     <Skeleton className="w-full min-w-[25%] rounded-lg h-[18rem]" />
                     <Skeleton className="w-full min-w-[25%] rounded-lg h-[18rem]" />
                 </div> : <div className="grid grid-cols-1 md:grid-cols-4 gap-2 p-4">
-                    {list?.items?.map((item: any) => (
-                        <div key={item.id} className="w-full min-w-[25%] border ring-1 ring-border rounded-lg shadow-sm overflow-hidden">
+                    {list?.items?.map((item: any, key: number) => (
+                        <div key={item.id + key} className="w-full min-w-[25%] border ring-1 ring-border rounded-lg shadow-sm overflow-hidden">
                             <div className="text-center relative">
                                 {item?.endTime as number < Date.now() &&
                                     <Badge variant="destructive" className="absolute right-2 top-2">expired</Badge>

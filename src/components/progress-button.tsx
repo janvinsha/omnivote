@@ -11,19 +11,19 @@ const ProgressButton: React.FC<ProgressButtonProps> = ({ percentage, children, .
     return (
         <button
             className={`relative text-white text-sm px-4 py-2 rounded-md overflow-hidden transition-opacity ${props.disabled
-                ? 'bg-gray-300 cursor-not-allowed'
-                : 'bg-gray-400 hover:opacity-75'
+                ? 'bg-teal-500 cursor-not-allowed'
+                : 'bg-teal-600 hover:opacity-75'
                 }`}
             {...props}
         >
             {/* Progress bar */}
             <span
-                className="absolute left-0 top-0 h-full bg-teal-500"
+                className={`absolute left-0 top-0 h-full bg-teal-700 ${props.disabled ? 'opacity-75' : ''}`}
                 style={{ width: `${percentage}%` }}
             ></span>
 
             {/* Button text */}
-            <span className="relative">{children}</span>
+            <span className="relative flex justify-center">{children}</span>
         </button>
     );
 };

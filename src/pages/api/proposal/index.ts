@@ -77,8 +77,7 @@ async function createProposal(req: NextApiRequest, res: NextApiResponse) {
         image,
         daoId,
         hasEnded: false,
-        supportedChains,
-        totalVotes: 0  // Default to 0 if not provided
+        supportedChains
     });
 
     console.log("THIS IS THE PROPOSAL BEFORE SAVING", proposal);

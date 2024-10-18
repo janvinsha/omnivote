@@ -21,8 +21,8 @@ export function AttestationTable({ items }: { items: any[], }) {
                             <AddressWithCopyButton address={item?.proposalAddress || item?.voter} />
                         </TableCell>
                         <TableCell>{item?.voteType || "Yes"}</TableCell>
-                        <TableCell className="text-right">
-                            <AddressWithCopyButton address={item?.voter} />
+                        <TableCell >
+                            <AddressWithCopyButton address={item?.voter || item?.proposalAddress} className="justify-end" />
                         </TableCell>
                     </TableRow>
                 )}

@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { Types } from "mongoose";
-import { cn } from "@/lib/utils"
+import { cn, getChainTokenName, getCreationFee } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
     Form,
@@ -34,20 +34,15 @@ import { CalendarIcon } from "@radix-ui/react-icons"
 import { toast } from "@/components/ui/use-toast"
 import React, { useEffect, useState } from "react"
 import ApiWrapper from "@/lib/ApiWrapper"
-import Web3Adapter from "@/services/adapters/Web3Adapter"
 import OmnivoteABI from "../data/abis/OmnivoteABI.json"
-import { useWeb3Auth } from "@web3auth/modal-react-hooks"
-import { DaoDocument, IDao } from "@/model/dao.model"
+import { IDao } from "@/model/dao.model"
 import Loader from "./loader";
 import { uploadFileToIPFS } from "@/services/adapters/IPFSAdapter";
-import ethersRPC from "@/lib/ethersRPC"
-import { getChainConfig, getChainId } from "@/lib/utils";
-import { SignProtocolAdapter } from "@/services/adapters/SignProtocol";
-import { EvmChains } from "@ethsign/sp-sdk";
+import { getChainId } from "@/lib/utils";
 import { useAccount } from 'wagmi'
-import { switchChain, writeContract, watchContractEvent } from '@wagmi/core'
+import { switchChain, writeContract, watchContractEvent,waitForTransactionReceipt } from '@wagmi/core'
 import { config } from "@/config/wagmiConfig";
-import { TimePickerInput } from "./ui/time-picker-input";
+import { ethers } from "ethers";
 //TODO: add a better date and time pitcker
 
 const proposalFormSchema = z.object({
@@ -95,7 +90,7 @@ export function CreateProposalForm({ closeDialog, refreshList }: { closeDialog: 
     const { address, chainId: connectedChainId } = useAccount()
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [banner, setBanner] = useState<any>();
-    const [daos, setDaos] = useState<IDao[]>()
+    const [daos, setDaos] = useState<any[]>()
     const [selectedDao, setSelectedDao] = useState<any | null>(null);  // Add selectedDao state
     const [selectedStartTime, setSelectedStartTime] = useState("00:00");
     const [selectedEndTime, setSelectedEndTime] = useState("00:00");
@@ -119,8 +114,8 @@ export function CreateProposalForm({ closeDialog, refreshList }: { closeDialog: 
         refreshDaoList();
     }, []);
 
-    const handleDaoSelect = (onChainID: string) => {
-        const selected = daos?.find(dao => dao.onChainID === onChainID) || null;
+    const handleDaoSelect = (id: string) => {
+        const selected = daos?.find(dao => dao?._id === id) || null;
         setSelectedDao(selected);  // Update the selected DAO
     };
 
@@ -148,30 +143,24 @@ export function CreateProposalForm({ closeDialog, refreshList }: { closeDialog: 
                 return;
             }
             let _banner = await uploadFileToIPFS(banner);
+
             const startTime = data.startTime.getTime();
             const endTime = data.endTime.getTime()
+            const chainIdMainChain = getChainId(selectedDao?.mainChain as string);
 
-            if (connectedChainId != getChainId(selectedDao?.mainChain as string)) {
-                await switchChain(config, { chainId: getChainId(selectedDao?.mainChain as string) })
+            if (connectedChainId != chainIdMainChain) {
+                await switchChain(config, { chainId: chainIdMainChain })
             }
-
-            // const web3Adapter = await Web3Adapter.create(provider, selectedDao?.mainChain as string, OmnivoteABI);
-            // //Convert unix timestamp which is in milliseconds to block timestamp which is in seconds or it will not work
-            // const transactionResponse = await web3Adapter.sendTransaction("createProposal", "ProposalCreated", data.dao, data.description, startTime / 1000, endTime / 1000, Number(data.quorum)
-            //     // ,
-            //     // {
-            //     //     maxPriorityFeePerGas,
-            //     //     maxFeePerGas
-            //     // }
-            // );
 
             await writeContract(config, {
                 abi: OmnivoteABI,
                 address: selectedDao?.mainChain as any,
                 functionName: 'createProposal',
+
                 args: [
-                    data.dao, data.description, startTime / 1000, endTime / 1000, Number(data.quorum)
+                    selectedDao.onChainID, data.description, startTime / 1000, endTime / 1000, Number(data.quorum)
                 ],
+                value: ethers.parseEther(getCreationFee(selectedDao?.mainChain))
             })
 
             const resultWatch: any = await new Promise((resolve, reject) => {
@@ -198,7 +187,7 @@ export function CreateProposalForm({ closeDialog, refreshList }: { closeDialog: 
             await apiw.post('proposal', {
                 ...data, startTime, endTime,
                 onChainID:
-                    resultWatch[0]?.topics?.[0] as string,
+                    resultWatch[0]?.topics?.[1] as string,
                 image: _banner,
                 ownerAddress: selectedDao?.ownerAddress,
                 daoId: selectedDao?._id as string,
@@ -246,6 +235,7 @@ export function CreateProposalForm({ closeDialog, refreshList }: { closeDialog: 
                             <FormItem>
                                 <FormLabel>Dao</FormLabel>
                                 <Select onValueChange={(value) => {
+                                    console.log("WHAT THE FUCK IS HAPPENING HERE", value)
                                     field.onChange(value);  // Set form value
                                     handleDaoSelect(value); // Update selected DAO
                                 }} defaultValue={field.value}>
@@ -255,7 +245,7 @@ export function CreateProposalForm({ closeDialog, refreshList }: { closeDialog: 
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                        {daos?.map((dao, key) => <SelectItem value={dao.onChainID} key={key}>{dao.name}</SelectItem>)}
+                                        {daos?.map((dao, key) => <SelectItem value={dao?._id as string} key={dao?._id as string}>{dao.name}</SelectItem>)}
                                     </SelectContent>
                                 </Select>
                                 <FormDescription>
@@ -484,9 +474,10 @@ export function CreateProposalForm({ closeDialog, refreshList }: { closeDialog: 
                         )}
                     />
 
-
+                    <p className="text-red-500 text-xs">{getCreationFee(selectedDao?.mainChain as string)} {getChainTokenName(selectedDao?.mainChain as string) || "Eth"} fee to create proposal</p>
 
                     <Button type="submit" >Create Proposal {isSubmitting && <Loader size="sm" />}</Button>
+
                 </form>
             </Form>
         </>

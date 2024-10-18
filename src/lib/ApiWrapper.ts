@@ -31,7 +31,10 @@ class ApiWrapper {
             const newBase = this.baseUrl.replace(/\/$/, ''); // remove trailing slash from baseUrl
             const newEnd = endpoint.replace(/^\//, ''); // remove leading slash from endpoint
             const url = `/${newBase}/${newEnd}`; // concatenate baseUrl and endpoint with a slash in between
+
             const response = await fetch(url, requestOptions);
+
+
             if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.message);

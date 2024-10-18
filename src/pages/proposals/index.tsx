@@ -36,7 +36,7 @@ export default function Proposal() {
     const list = { name: "Proposals", type: "proposal", items: proposals }
 
     return (
-        <div className="container relative  pb-[10rem]">
+        <div className="container relative  pb-[10rem]" >
             <PageHeader>
                 {/* <Announcement /> */}
                 <div className="flex justify-between w-full items-start" >
@@ -55,3 +55,5 @@ export default function Proposal() {
 
     );
 }
+
+
