@@ -22,7 +22,7 @@ const AddressWithCopyButton = ({ address, className }: { address: string, classN
     };
 
     return (
-        <div className={clsx("flex items-center w-full", className)}
+        <div className={clsx("flex items-center", className)}
         >
             <span className="text-gray-700 text-xs">{address}</span>
             <Button variant="ghost" size="sm" onClick={handleCopy} className="px-2 outline-none">

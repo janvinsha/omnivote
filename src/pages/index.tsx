@@ -63,7 +63,7 @@ export default function Home() {
   const daoList = { name: "These are our top Daos", type: "dao", items: daos }
   return (
 
-    <div className="container relative pb-[10rem]">
+    <div className="px-2 md:container relative pb-[10rem]">
       <PageHeader>
         <PageHeaderHeading>Cross-Chain Decentralized Voting</PageHeaderHeading>
         <PageHeaderDescription>

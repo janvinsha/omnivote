@@ -33,7 +33,7 @@ export default function Dao() {
 
     const list = { name: "Daos", type: "dao", items: daos }
     return (
-        <div className="container relative pb-[10rem]">
+        <div className="px-2 md:container relative pb-[10rem]">
             <PageHeader>
                 <div className="flex justify-between w-full items-start" >
                     <PageHeaderHeading>Explore DAOs</PageHeaderHeading>
