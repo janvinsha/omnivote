@@ -255,7 +255,7 @@ export default function ProposalDetails() {
                             </div>
                         </div>
                     </div>
-                    <div className=" px-[2.8rem]">
+                    <div className="px-0 md:px-[2.8rem]">
                         <div className="flex flex-col gap-4 rounded-lg shadow-sm ring-1 ring-border">
                             <div className="flex-1 pl-4 text-lg font-medium pt-4">
                                 <h2 className="capitalize">Vote history</h2>
