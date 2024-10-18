@@ -46,7 +46,7 @@ export function MainNav() {
             pathname === "/votes" ? "text-foreground" : "text-foreground/60"
           )}
         >
-          Vote
+          Votes
         </Link>
         {/* <Link
           href="/create"

@@ -20,11 +20,12 @@ import {
 import { useWeb3Auth } from "@web3auth/modal-react-hooks";
 import { useAccount, useDisconnect } from 'wagmi'
 import { ConnectWalletDialog } from "./wallet-connect-dialog";
+import Identicon from "./identicon";
 
 
 export function UserNav() {
 
-  const { chain, isConnected } = useAccount()
+  const { chain, isConnected, address } = useAccount()
   const { disconnect } = useDisconnect()
 
   const signOut = async () => {
@@ -39,8 +40,9 @@ export function UserNav() {
         < DropdownMenuTrigger asChild >
           <Button variant="ghost" className="relative h-8 w-8 rounded-lg">
             <Avatar className="h-8 w-8">
-              <AvatarImage src={"/"} alt="profile" />
-              <AvatarFallback>OM</AvatarFallback>
+              <Identicon address={address as string} />
+              {/* <AvatarImage src={"/"} alt="profile" /> */}
+              <AvatarFallback />
             </Avatar>
           </Button>
         </DropdownMenuTrigger >

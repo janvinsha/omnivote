@@ -1,21 +1,12 @@
 import { http, createConfig } from 'wagmi'
-import { base, mainnet, optimism, baseSepolia, sepolia } from 'wagmi/chains'
-import { injected, metaMask, safe, walletConnect } from 'wagmi/connectors'
-
-const projectId = '<WALLETCONNECT_PROJECT_ID>'
+import { polygonAmoy, avalancheFuji, bscTestnet, sepolia, mainnet } from 'wagmi/chains'
 
 export const config = createConfig({
-    chains: [sepolia, mainnet, base, baseSepolia],
-    // connectors: [
-    //     injected(),
-    //     // walletConnect({ projectId }),
-    //     metaMask(),
-    //     safe(),
-    // ],
+    chains: [sepolia, polygonAmoy, avalancheFuji, bscTestnet],
     transports: {
-        [mainnet.id]: http(),
-        [base.id]: http(),
-        [baseSepolia.id]: http(),
         [sepolia.id]: http(),
+        [polygonAmoy.id]: http("https://polygon-amoy.drpc.org"),
+        [avalancheFuji.id]: http("https://api.avax-test.network/ext/bc/C/rpc"),
+        [bscTestnet.id]: http("https://data-seed-prebsc-1-s1.binance.org:8545/"),
     },
 })

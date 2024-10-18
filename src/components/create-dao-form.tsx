@@ -15,24 +15,21 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { toast } from "@/components/ui/use-toast"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import ApiWrapper from "@/lib/ApiWrapper"
-import { SignProtocolAdapter } from "@/services/adapters/SignProtocol"
-import { useWeb3Auth } from "@web3auth/modal-react-hooks"
-import {
-    EvmChains,
-} from '@ethsign/sp-sdk';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
-import { sepoliaContractAddress, baseContractAddress } from "../data/contracts"
+import { amoyContractAddress, bscTestContractAddress, avaxContractAddress, polygonContractAddress, bscContractAddress, avalanceContractAddress } from "../data/contracts"
 import OmnivoteABI from "../data/abis/OmnivoteABI.json"
-import Web3Adapter from "@/services/adapters/Web3Adapter";
 import { Checkbox } from "./ui/checkbox";
 import { uploadFileToIPFS } from "@/services/adapters/IPFSAdapter";
 import Loader from "./loader";
-import { getChainConfig, getChainId } from "@/lib/utils";
+import { getChainId, getChainTokenName, getCreationFee, omnivoteContractList } from "@/lib/utils";
 import { useAccount } from 'wagmi'
-import { switchChain, writeContract, watchContractEvent } from '@wagmi/core'
+import { switchChain, writeContract, watchContractEvent, getGasPrice } from '@wagmi/core'
 import { config } from "@/config/wagmiConfig";
+import { ethers } from "ethers";
+
+const appEnv = process.env.NEXT_PUBLIC_APP_ENV || "testnet"
 
 const profileFormSchema = z.object({
     name: z
@@ -47,14 +44,15 @@ const profileFormSchema = z.object({
     supportedChains: z.array(z.string()).refine((value) => value.some((item) => item), {
         message: "You have to select at least one chain",
     }),
-    description: z.string().max(160).min(4)
+    description: z.string().max(500).min(4)
 })
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>
 
 // This can come from your database or API.
+
 const defaultValues: Partial<ProfileFormValues> = {
-    supportedChains: [`${sepoliaContractAddress}`],
+    supportedChains: [`${appEnv === "testnet" ? amoyContractAddress : polygonContractAddress}`],
 }
 
 
@@ -63,12 +61,8 @@ export function CreateDaoForm({ closeDialog, refreshList }: { closeDialog: any, 
     const apiw = ApiWrapper.create();
     const { address, chainId: connectedChainId } = useAccount()
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [mainChain, setMainChain] = useState("")
 
-    const omnivoteContractList = [{
-        value: sepoliaContractAddress, name: "ETH Sepolia"
-    }, {
-        value: baseContractAddress, name: "Base Sepolia"
-    }]
 
     const [banner, setBanner] = useState<any>();
 
@@ -78,9 +72,14 @@ export function CreateDaoForm({ closeDialog, refreshList }: { closeDialog: any, 
         mode: "onChange"
     })
 
+
     async function onSubmit(data: ProfileFormValues) {
         setIsSubmitting(true);
+
+        console.log("THIS IS THE DATA", data)
         try {
+
+
 
             if (!banner) {
                 toast({
@@ -94,13 +93,12 @@ export function CreateDaoForm({ closeDialog, refreshList }: { closeDialog: any, 
                 return;
             }
             let _banner = await uploadFileToIPFS(banner);
-            console.log("THIS IS THE CHAIN", getChainId(data.mainChain as string))
-            if (connectedChainId != getChainId(data.mainChain as string)) {
-                await switchChain(config, { chainId: getChainId(data.mainChain as string) })
-            }
-            // const web3Adapter = await Web3Adapter.create(provider, data.mainChain, OmnivoteABI);
-            // const transactionResponse = await web3Adapter.sendTransaction("addDao", "DaoAdded", data.name, data.description);
 
+            const chainIdMainChain = getChainId(data.mainChain as string);
+            console.log("THIS IS THE CHAIN", chainIdMainChain)
+            if (connectedChainId != chainIdMainChain) {
+                await switchChain(config, { chainId: chainIdMainChain })
+            }
 
             await writeContract(config, {
                 abi: OmnivoteABI,
@@ -109,6 +107,8 @@ export function CreateDaoForm({ closeDialog, refreshList }: { closeDialog: any, 
                 args: [
                     data.name, data.description
                 ],
+                value: ethers.parseEther(getCreationFee(mainChain)),
+
             })
 
             const resultWatch: any = await new Promise((resolve, reject) => {
@@ -124,6 +124,7 @@ export function CreateDaoForm({ closeDialog, refreshList }: { closeDialog: any, 
                                 resolve(logs); // Resolves the promise when the logs are received
                             },
                             poll: true
+                            //Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
                         }
                     )
                 } catch (error) {
@@ -131,9 +132,9 @@ export function CreateDaoForm({ closeDialog, refreshList }: { closeDialog: any, 
                 }
             });
 
-            console.log("RESULT FROM ADDING DAO", resultWatch[0]?.topics)
+            console.log("RESULT FROM ADDING DAO", resultWatch)
             await apiw.post('dao', {
-                ...data, image: _banner, onChainID: resultWatch[0]?.topics?.[0] as string, ownerAddress: address
+                ...data, image: _banner, onChainID: resultWatch[0]?.topics?.[1] as string, ownerAddress: address
             })
             closeDialog()
             refreshList()
@@ -219,7 +220,6 @@ export function CreateDaoForm({ closeDialog, refreshList }: { closeDialog: any, 
                             type="file"
                             onChange={(e) => {
                                 handleBannerChange(e);
-                                // form.register('banner').onChange(e);
                             }}
                         />
                         <FormDescription>
@@ -233,7 +233,10 @@ export function CreateDaoForm({ closeDialog, refreshList }: { closeDialog: any, 
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>Main Chain</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <Select onValueChange={(value) => {
+                                    field.onChange(value)
+                                    setMainChain(value)
+                                }} defaultValue={field.value}>
                                     <FormControl>
                                         <SelectTrigger>
                                             <SelectValue placeholder="Select" />
@@ -300,7 +303,7 @@ export function CreateDaoForm({ closeDialog, refreshList }: { closeDialog: any, 
                             </FormItem>
                         )}
                     />
-
+                    <p className="text-red-500 text-xs">{getCreationFee(mainChain as string)} {getChainTokenName(mainChain as string) || "Eth"} fee to create Dao</p>
                     <Button type="submit">Create DAO {isSubmitting && <Loader size="sm" />}</Button>
                 </form>
             </Form>

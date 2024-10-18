@@ -1,6 +1,5 @@
-import Image from "next/image"
+
 import Link from "next/link"
-import { Inter } from "next/font/google";
 import {
   PageActions,
   PageHeader,
@@ -60,8 +59,8 @@ export default function Home() {
     refreshDaoList();
   }, []);
 
-  const proposalList = { name: "Explore recent proposals", type: "proposals", items: proposals }
-  const daoList = { name: "These are our top Daos", type: "daos", items: daos }
+  const proposalList = { name: "Explore recent proposals", type: "proposal", items: proposals }
+  const daoList = { name: "These are our top Daos", type: "dao", items: daos }
   return (
 
     <div className="container relative pb-[10rem]">
@@ -72,7 +71,7 @@ export default function Home() {
         </PageHeaderDescription>
         <PageActions>
           <Button asChild size="sm">
-            <Link href="/dao">Get Started</Link>
+            <Link href="/daos">Get Started</Link>
           </Button>
           <Button asChild size="sm" variant="ghost">
             <Link

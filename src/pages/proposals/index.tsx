@@ -1,11 +1,9 @@
 import {
-    PageActions,
     PageHeader,
     PageHeaderDescription,
     PageHeaderHeading,
 } from "@/components/page-header"
-import { Button } from "@/components/ui/button";
-import { siteConfig } from "@/config/site";
+
 import { CardList } from "@/components/card-list";
 import ApiWrapper from "@/lib/ApiWrapper";
 import { useEffect, useState } from "react";
@@ -35,10 +33,10 @@ export default function Proposal() {
         refreshProposalList();
     }, []);
 
-    const list = { name: "Proposals", type: "proposals", items: proposals }
+    const list = { name: "Proposals", type: "proposal", items: proposals }
 
     return (
-        <div className="container relative  pb-[10rem]">
+        <div className="container relative  pb-[10rem]" >
             <PageHeader>
                 {/* <Announcement /> */}
                 <div className="flex justify-between w-full items-start" >
@@ -48,23 +46,7 @@ export default function Proposal() {
                 <PageHeaderDescription>
                     Explore Proposals in OmniVote
                 </PageHeaderDescription>
-                {/* <PageActions>
-                    <Button asChild size="sm">
-                        <Link href="/docs">Get Started</Link>
-                    </Button>
-                    <Button asChild size="sm" variant="ghost">
-                        <Link
-                            target="_blank"
-                            rel="noreferrer"
-                            href={siteConfig.links.github}
-                        >
-                            GitHub
-                        </Link>
-                    </Button>
-                </PageActions> */}
             </PageHeader>
-            {/* <ExamplesNav className="[&>a:first-child]:text-primary" /> */}
-
             <div>
                 <CardList list={list} loading={loading} />
             </div>
@@ -73,3 +55,5 @@ export default function Proposal() {
 
     );
 }
+
+

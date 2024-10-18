@@ -4,6 +4,7 @@ import mongoose, { Schema, Document, models, Model } from 'mongoose';
 export interface IProposal {
     name: string;
     onChainID: string;
+    daoId: string;
     ownerAddress: string;
     description?: string;
     startTime?: number;  // or Date if using Date
@@ -12,7 +13,9 @@ export interface IProposal {
     image?: string;
     hasEnded?: boolean;
     totalVotes?: number;
+    votes?: { yes: number, no: number, abstain: number };
     supportedChains?: string[];
+
 }
 
 // Define the document interface which extends Mongoose's Document
@@ -22,6 +25,7 @@ export interface ProposalDocument extends IProposal, Document { }
 const proposalSchema: Schema<ProposalDocument> = new Schema(
     {
         name: { type: String, required: true },
+        daoId: { type: String, required: true },
         onChainID: { type: String, required: true, trim: true },
         ownerAddress: { type: String, required: true, trim: true },
         description: { type: String, trim: true, maxlength: 500 },
@@ -32,6 +36,11 @@ const proposalSchema: Schema<ProposalDocument> = new Schema(
         hasEnded: { type: Boolean, default: false },
         supportedChains: [{ type: String, trim: true }],
         totalVotes: { type: Number, default: 0 },
+        votes: {
+            yes: { type: Number, default: 0, min: 0 },
+            no: { type: Number, default: 0, min: 0 },
+            abstain: { type: Number, default: 0, min: 0 },
+        },
     },
     {
         timestamps: true,  // Automatically manages `createdAt` and `updatedAt`

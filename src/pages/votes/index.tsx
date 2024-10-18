@@ -1,19 +1,12 @@
-import Image from "next/image"
-import Link from "next/link"
-import { Inter } from "next/font/google";
 import {
-    PageActions,
     PageHeader,
     PageHeaderDescription,
     PageHeaderHeading,
 } from "@/components/page-header"
-import { Button } from "@/components/ui/button";
-import { siteConfig } from "@/config/site";
-import { CardList } from "@/components/card-list";
+
 import ApiWrapper from "@/lib/ApiWrapper";
 import React, { useEffect, useState } from "react";
-import { SignProtocolAdapter } from "@/services/adapters/SignProtocol";
-import { EvmChains } from "@ethsign/sp-sdk";
+
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { FilterSkeleton } from "@/components/filter-selector";
@@ -23,15 +16,13 @@ import { IVote } from "@/model/vote.model";
 
 
 
-export default function Attestation() {
+export default function Votes() {
     const [votes, setVotes] = useState()
     const [search, setSearch] = useState("");
     const apiw = ApiWrapper.create();
-    const refreshAttestationList = async () => {
-        // const signProtocol = new SignProtocolAdapter({ chain: EvmChains.sepolia })
-        // const { rows } = await signProtocol.getAllvotes({ attester: search })
-        // setVotes(rows);
-        await apiw.get(`vote?attester=${search}`).then((data: any) => {
+    const refreshVotesList = async () => {
+
+        await apiw.get(`vote?voter=${search}`).then((data: any) => {
             const _votes: IVote[] = data?.votes;
             console.log("THIS IS THE PROPOSAL", _votes)
             setVotes(_votes as any);
@@ -39,7 +30,7 @@ export default function Attestation() {
     };
 
     useEffect(() => {
-        refreshAttestationList();
+        refreshVotesList();
     }, [search]);
 
     const list = { name: "Votes", items: [{ name: "Propsal 1" }, { name: "Proposal 2" }, { name: "Propsal 1" }, { name: "Proposal 2" }, { name: "Propsal 1" }, { name: "Proposal 2" }] }
