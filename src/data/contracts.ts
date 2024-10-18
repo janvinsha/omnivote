@@ -15,6 +15,11 @@ export const amoyChainSelector = "16281711391670634445";
 export const avaxChainSelector = "14767482510784806043";
 export const bscTestChainSelector = "13264668187771770619";
 
+export const sepoliaScanUrl = "";
+export const amoyScanUrl = "https://amoy.polygonscan.com/address/0xe6c7fb0a747a0130911f82e6dbb5d7d930b6b265";
+export const avaxScanUrl = "https://testnet.avascan.info/blockchain/all/address/0x9fD1252369A7892915CC60Fd9b74fDb19840D1C0";
+export const bscTestScanUrl = "https://testnet.bscscan.com/address/0xEf27dEc223ED218Ad5AfE0F211dB6Eb3a9918c4C"
+
 
 
 //MAINNET
@@ -32,6 +37,12 @@ export const ethChainSelector = "5009297550715157269";
 export const polygonChainSelector = "4051577828743386545";
 export const avalanceChainSelector = "6433500567565415381";
 export const bscChainSelector = "11344663589394136015";
+
+export const ethScanUrl = "";
+export const polygonScanUrl = "";
+export const avalanceScanUrl = "";
+export const bscScanUrl = ""
+
 
 
 

@@ -36,7 +36,7 @@ export default function Votes() {
     const list = { name: "Votes", items: [{ name: "Propsal 1" }, { name: "Proposal 2" }, { name: "Propsal 1" }, { name: "Proposal 2" }, { name: "Propsal 1" }, { name: "Proposal 2" }] }
 
     return (
-        <div className="container relative pb-[10rem]">
+        <div className="px-2 md:container relative pb-[10rem]">
             <PageHeader>
                 {/* <Announcement /> */}
                 <div className="flex justify-between w-full items-start" >

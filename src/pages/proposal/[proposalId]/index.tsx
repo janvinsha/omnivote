@@ -7,7 +7,7 @@ import ApiWrapper from "@/lib/ApiWrapper";
 import { useEffect, useState } from "react";
 import { IProposal } from "@/model/proposal.model";
 import { useRouter } from "next/router";
-import { getChainId, getChainName, getChainSelectorCrossChain, getChainTokenName, getVoteFee } from "@/lib/utils";
+import { getChainId, getChainName, getChainSelectorCrossChain, getChainTokenName, getContractUrl, getVoteFee } from "@/lib/utils";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import OmnivoteABI from "../../../data/abis/OmnivoteABI.json"
 import Image from "next/image";
@@ -155,7 +155,7 @@ export default function ProposalDetails() {
     }
 
     return (
-        <div className="container relative  pb-[10rem]">
+        <div className="px-2 md:container relative  pb-[10rem]">
             <PageHeader>
                 <div className="flex justify-between w-full items-start" >
                     <PageHeaderHeading>Proposal Description</PageHeaderHeading>
@@ -183,8 +183,7 @@ export default function ProposalDetails() {
 
             </div> :
                 <div className="flex flex-col gap-[6rem]">
-                    <div className="flex md:px-10 gap-2  flex-col md:flex-row">
-
+                    <div className="flex p-2 md:px-10 gap-2  flex-col md:flex-row">
                         <div className="md:w-[55rem] w-full">
                             <Image src={proposal?.image || imageUrl} alt="img" className="w-full" width={100} height={100} />
                         </div>
@@ -252,6 +251,7 @@ export default function ProposalDetails() {
                                     <span>  <Badge variant="destructive" className="">Proposal has expired</Badge></span>
                                 }
                                 <p className="text-red-500 text-xs">{getVoteFee(chainToVote as string)} {getChainTokenName(chainToVote as string) || "Eth"} fee to vote</p>
+                                <a href={getContractUrl(proposal?.mainChain as string)} className="text-xs underline text-primary" target="_blank">View Smart Contract On Chain</a>
                             </div>
                         </div>
                     </div>
@@ -262,6 +262,7 @@ export default function ProposalDetails() {
                             </div>
                             <AttestationTable items={attestations as any} />
                         </div>
+
                     </div>
                 </div>}
 

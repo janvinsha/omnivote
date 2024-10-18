@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { amoyContractAddress, bscTestContractAddress, avaxContractAddress, polygonContractAddress, bscContractAddress, avalanceContractAddress, amoyChainSelector, bscTestChainSelector, avaxChainSelector, polygonChainSelector, bscChainSelector, avalanceChainSelector, amoyChainId, bscTestChainId, avaxChainId, polygonChainId, bscChainId, avalanceChainId, sepoliaContractAddress, ethContractAddress, sepoliaChainSelector, ethChainSelector, sepoliaChainId, ethChainId } from "@/data/contracts"
+import { amoyContractAddress, bscTestContractAddress, avaxContractAddress, polygonContractAddress, bscContractAddress, avalanceContractAddress, amoyChainSelector, bscTestChainSelector, avaxChainSelector, polygonChainSelector, bscChainSelector, avalanceChainSelector, amoyChainId, bscTestChainId, avaxChainId, polygonChainId, bscChainId, avalanceChainId, sepoliaContractAddress, ethContractAddress, sepoliaChainSelector, ethChainSelector, sepoliaChainId, ethChainId, sepoliaScanUrl, amoyScanUrl, bscTestScanUrl, avaxScanUrl, ethScanUrl, polygonScanUrl, bscScanUrl, avalanceScanUrl } from "@/data/contracts"
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -153,3 +153,19 @@ export function getChainId(contractAddress: string) {
   return chainToChainId[contractAddress];
 }
 
+
+// Return chain ID based on contract address
+export function getContractUrl(contractAddress: string) {
+  const chainToChainId = {
+    [sepoliaContractAddress]: sepoliaScanUrl,
+    [amoyContractAddress]: amoyScanUrl,
+    [bscTestContractAddress]: bscTestScanUrl,
+    [avaxContractAddress]: avaxScanUrl,
+
+    [ethContractAddress]: ethScanUrl,
+    [polygonContractAddress]: polygonScanUrl,
+    [bscContractAddress]: bscScanUrl,
+    [avalanceContractAddress]: avalanceScanUrl,
+  };
+  return chainToChainId[contractAddress];
+}
