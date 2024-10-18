@@ -3,37 +3,35 @@ import {
     PageHeaderDescription,
     PageHeaderHeading,
 } from "@/components/page-header"
-import { Button } from "@/components/ui/button";
 import ApiWrapper from "@/lib/ApiWrapper";
 import { useEffect, useState } from "react";
 import { IProposal } from "@/model/proposal.model";
 import { useRouter } from "next/router";
-import { getChainConfig, getChainId, getChainName, getChainNameSignProtocol, getChainSelectorCrossChain, getRecieverAddressCrossChain } from "@/lib/utils";
+import { getChainId, getChainName, getChainSelectorCrossChain, getChainTokenName, getVoteFee } from "@/lib/utils";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import Web3Adapter from "@/services/adapters/Web3Adapter";
 import OmnivoteABI from "../../../data/abis/OmnivoteABI.json"
-import { useWeb3Auth } from "@web3auth/modal-react-hooks"
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { toast } from "@/components/ui/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { AttestationTable } from "@/components/attestation-table";
-import { SignProtocolAdapter } from "@/services/adapters/SignProtocol";
 import { IVote } from "@/model/vote.model";
-import ethersRPC from "@/lib/ethersRPC";
 import Loader from "@/components/loader";
+import { Badge } from "@/components/ui/badge";
+import ProgressButton from "@/components/progress-button";
 import { useAccount } from 'wagmi'
 import { uploadFileToIPFS } from "@/services/adapters/IPFSAdapter";
-import { switchChain, writeContract, watchContractEvent } from '@wagmi/core'
+import { switchChain, writeContract } from '@wagmi/core'
 import { config } from "@/config/wagmiConfig";
+import { ethers } from "ethers";
 
 const imageUrl = "https://ipfs.io/ipfs/QmUUshcrtd7Fj4nMmYB3oYRDXcswpB2gw7ECmokcRqcNMf";
 export default function ProposalDetails() {
     const router = useRouter();
     const { proposalId } = router.query;
     const [loading, setLoading] = useState(false);
-    const [voteLoading, setVoteLoading] = useState(false);
-
+    const [voteLoading, setVoteLoading] = useState("");
+    const { toast } = useToast();
     const { address, chainId: connectedChainId } = useAccount()
 
     const [attestations, setAttestations] = useState()
@@ -82,48 +80,62 @@ export default function ProposalDetails() {
     const handleChainSelect = (value: string) => {
         setChainToVote(value)
     }
-    const handleVote = async () => {
-        setVoteLoading(true)
-        try {
+    const handleVote = async (voteType: string, voteTypeId: number) => {
 
+        if (!address) {
+            toast({
+                title: "Connect Wallet",
+                description: "You need to connect your wallet to vote",
+                duration: 2000,
+            })
+            return;
+        }
+        setVoteLoading(voteType)
+
+        try {
             if (connectedChainId != getChainId(chainToVote as string)) {
                 await switchChain(config, { chainId: getChainId(chainToVote as string) })
             }
-            if (getChainConfig(chainToVote as string) == getChainConfig(proposal?.mainChain as string)) {
+            if (getChainId(chainToVote as string) == getChainId(proposal?.mainChain as string)) {
 
                 await writeContract(config, {
                     abi: OmnivoteABI,
                     address: proposal?.mainChain as any,
                     functionName: 'submitVote',
                     args: [
-                        proposal?.onChainID, 1
+                        proposal?.onChainID, voteTypeId
                     ],
+                    value: ethers.parseEther(getVoteFee(proposal?.mainChain))
                 })
-
             } else {
-
                 await writeContract(config, {
                     abi: OmnivoteABI,
                     address: chainToVote as any,
                     functionName: 'submitVoteCrossChain',
                     args: [
-                        getChainSelectorCrossChain(chainToVote as string), getRecieverAddressCrossChain(chainToVote as string), proposal?.onChainID as string,
+                        getChainSelectorCrossChain(proposal?.mainChain as string), proposal?.mainChain as string, proposal?.onChainID as string, voteTypeId
                     ],
+                    value: ethers.parseEther(getVoteFee(chainToVote as string))
                 })
             }
+
+
             await apiw.put(`proposal/${proposal?._id as string}`, {
-                totalVotes: Number(proposal?.totalVotes) + 1
+                totalVotes: Number(proposal?.totalVotes) + 1,
+                votes: { ...proposal?.votes, [voteType]: ((proposal?.votes as any)?.[voteType] || 0) + 1 }
             })
-            const ipfsHash = await uploadFileToIPFS(JSON.stringify({ proposalId, voter: address, proposalAddress: proposal?.onChainID }));
             await apiw.post("/vote", {
-                ipfsHash: ipfsHash, proposalId, voter: address, proposalAddress: proposal?.onChainID
+                proposalId, voter: address, proposalAddress: proposal?.onChainID, voteType
             })
+
             toast({
                 title: "Successfully voted on this protocol"
             })
+
             refreshProposal();
             refreshVotesList()
         }
+
         catch (error) {
             console.log("THIS IS THE ERROR", error)
             toast({
@@ -131,10 +143,16 @@ export default function ProposalDetails() {
                 variant: "destructive"
             })
         } finally {
-            setVoteLoading(false)
+            setVoteLoading("")
         }
     }
 
+    const calculateVotePercentage = (voteType: 'yes' | 'no' | 'abstain') => {
+        const totalVotes = Number(proposal.totalVotes);
+        const type = Number(proposal.votes?.[voteType]) || 0
+        const percentage = 100 * Number(type / totalVotes) || 0
+        return Math.round(percentage)
+    }
 
     return (
         <div className="container relative  pb-[10rem]">
@@ -210,28 +228,31 @@ export default function ProposalDetails() {
                                 <h2>Proposal Total Votes </h2>
                                 <Input value={proposal?.totalVotes} disabled />
                             </span>
-
-
-                            <span className="flex gap-2 md:pt-6 ">
-                                {proposal?.endTime as number > Date.now() ? <><Select
-                                    onValueChange={(value) => handleChainSelect(value)}
-                                >
-                                    <SelectTrigger className="md:w-[15rem]">
+                            <div className="flex flex-col gap-4 md:pt-2 ">
+                                {proposal?.endTime as number > Date.now() ? <><Select onValueChange={(value) => handleChainSelect(value)} >
+                                    <SelectTrigger className="md:w-[20rem]">
                                         <SelectValue placeholder="Supported chains to vote with" />
                                     </SelectTrigger>
-
                                     <SelectContent>
                                         {proposal?.supportedChains?.map((chain: any) => ({ value: chain, name: getChainName(chain) })).map((list: any, key: any) => <SelectItem value={list.value} key={key}>{list.name}</SelectItem>)}
                                     </SelectContent>
                                 </Select>
-
-                                    <Button disabled={!chainToVote} onClick={handleVote}>Vote on this proposal {voteLoading && <Loader size="sm" />}</Button>
+                                    <div className="flex flex-col gap-4 md:w-[20rem]">
+                                        <ProgressButton percentage={calculateVotePercentage("yes")} disabled={!chainToVote} onClick={() => handleVote("yes", 1)}>
+                                            Yes {`${calculateVotePercentage("yes")}%`} {(proposal?.votes?.yes || 0) + " Votes"}{voteLoading === "yes" && <Loader size="sm" />}
+                                        </ProgressButton>
+                                        <ProgressButton percentage={calculateVotePercentage("no")} disabled={!chainToVote} onClick={() => handleVote("no", 2)}>
+                                            No {`${calculateVotePercentage("no")}%`} {(proposal?.votes?.no || 0) + " Votes"}{voteLoading === "no" && <Loader size="sm" />}
+                                        </ProgressButton>
+                                        <ProgressButton percentage={calculateVotePercentage("abstain")} disabled={!chainToVote} onClick={() => handleVote("abstain", 3)}>
+                                            Abstain {`${calculateVotePercentage("abstain")}%`} {(proposal?.votes?.abstain || 0) + " Votes"}{voteLoading === "abstain" && <Loader size="sm" />}
+                                        </ProgressButton>
+                                    </div>
                                 </> :
-                                    ""
+                                    <span>  <Badge variant="destructive" className="">Proposal has expired</Badge></span>
                                 }
-                            </span>
-
-
+                                <p className="text-red-500 text-xs">{getVoteFee(chainToVote as string)} {getChainTokenName(chainToVote as string) || "Eth"} fee to vote</p>
+                            </div>
                         </div>
                     </div>
                     <div className=" px-[2.8rem]">
@@ -241,7 +262,6 @@ export default function ProposalDetails() {
                             </div>
                             <AttestationTable items={attestations as any} />
                         </div>
-
                     </div>
                 </div>}
 
@@ -249,3 +269,4 @@ export default function ProposalDetails() {
 
     );
 }
+

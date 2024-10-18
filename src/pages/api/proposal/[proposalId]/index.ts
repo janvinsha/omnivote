@@ -9,6 +9,7 @@ export default async function handler(
     await connectDb();
 
     try {
+
         if (req.method === 'GET') {
             return getProposalHandler(req, res);
         }
@@ -34,8 +35,11 @@ async function getProposalHandler(req: NextApiRequest, res: NextApiResponse) {
 
 
 async function updateProposalHandler(req: NextApiRequest, res: NextApiResponse) {
+
+
+
     const { proposalId } = req.query as Record<string, string>;
-    const { totalVotes, hasEnded } = req.body;
+    const { totalVotes, hasEnded, votes } = req.body;
 
     try {
         // Find the proposal by ID
@@ -49,6 +53,10 @@ async function updateProposalHandler(req: NextApiRequest, res: NextApiResponse) 
         if (typeof totalVotes !== 'undefined') {
             proposal.totalVotes = totalVotes;
         }
+        // Conditionally update only if values are provided
+        if (typeof votes !== 'undefined') {
+            proposal.votes = votes;
+        }
 
         if (typeof hasEnded !== 'undefined') {
             proposal.hasEnded = hasEnded;
@@ -61,6 +69,7 @@ async function updateProposalHandler(req: NextApiRequest, res: NextApiResponse) 
 
         return res.status(200).json({ proposal });
     } catch (error) {
+        console.log("THIS IS THE RESPONSEE ERRORORR HEREE OO", error);
         return res.status(500).json({ error: 'An error occurred while updating the proposal' });
     }
 }

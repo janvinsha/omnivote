@@ -2,10 +2,10 @@ import mongoose, { Schema, Document, models, Model } from 'mongoose';
 
 // Define the base Vote interface
 export interface IVote {
-    ipfsHash: string;
     proposalId: string;
     voter: string;
     proposalAddress: string;
+    voteType: string;
 }
 
 // Define the document interface which extends Mongoose's Document
@@ -16,7 +16,11 @@ const voteSchema: Schema<VoteDocument> = new Schema(
     {
         proposalId: { type: String, required: true },
         proposalAddress: { type: String, required: true },
-        ipfsHash: { type: String, required: true, trim: true },
+        voteType: {
+            type: String,
+            enum: ["yes", "no", "abstain"],  // Restricts values to the enum
+            required: true
+        },
         voter: { type: String, required: true, trim: true },
     },
     {

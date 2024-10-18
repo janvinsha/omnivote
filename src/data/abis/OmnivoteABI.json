@@ -7,13 +7,13 @@
                 "type": "address"
             },
             {
-                "internalType": "address",
-                "name": "_link",
-                "type": "address"
+                "internalType": "uint256",
+                "name": "initialCreationFee",
+                "type": "uint256"
             },
             {
                 "internalType": "uint256",
-                "name": "initialCreationFee",
+                "name": "initialVoteFee",
                 "type": "uint256"
             }
         ],
@@ -178,9 +178,9 @@
             },
             {
                 "indexed": false,
-                "internalType": "string",
-                "name": "text",
-                "type": "string"
+                "internalType": "bytes",
+                "name": "message",
+                "type": "bytes"
             }
         ],
         "name": "MessageReceived",
@@ -209,9 +209,9 @@
             },
             {
                 "indexed": false,
-                "internalType": "string",
-                "name": "text",
-                "type": "string"
+                "internalType": "bytes",
+                "name": "message",
+                "type": "bytes"
             },
             {
                 "indexed": false,
@@ -333,13 +333,13 @@
         "anonymous": false,
         "inputs": [
             {
-                "indexed": true,
-                "internalType": "bytes32",
-                "name": "proposalId",
-                "type": "bytes32"
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "newFee",
+                "type": "uint256"
             }
         ],
-        "name": "ProposalFinalized",
+        "name": "VoteFeeUpdated",
         "type": "event"
     },
     {
@@ -356,16 +356,49 @@
                 "internalType": "bytes32",
                 "name": "proposalId",
                 "type": "bytes32"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "weight",
-                "type": "uint256"
             }
         ],
         "name": "VoteSubmitted",
         "type": "event"
+    },
+    {
+        "inputs": [],
+        "name": "VOTE_ABSTAIN",
+        "outputs": [
+            {
+                "internalType": "uint8",
+                "name": "",
+                "type": "uint8"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "VOTE_NO",
+        "outputs": [
+            {
+                "internalType": "uint8",
+                "name": "",
+                "type": "uint8"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "VOTE_YES",
+        "outputs": [
+            {
+                "internalType": "uint8",
+                "name": "",
+                "type": "uint8"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
     },
     {
         "inputs": [],
@@ -390,31 +423,9 @@
         "name": "addDao",
         "outputs": [
             {
-                "components": [
-                    {
-                        "internalType": "bytes32",
-                        "name": "daoId",
-                        "type": "bytes32"
-                    },
-                    {
-                        "internalType": "address",
-                        "name": "daoAddress",
-                        "type": "address"
-                    },
-                    {
-                        "internalType": "string",
-                        "name": "name",
-                        "type": "string"
-                    },
-                    {
-                        "internalType": "string",
-                        "name": "description",
-                        "type": "string"
-                    }
-                ],
-                "internalType": "struct OmniVote.DAOInfo",
+                "internalType": "bytes32",
                 "name": "",
-                "type": "tuple"
+                "type": "bytes32"
             }
         ],
         "stateMutability": "payable",
@@ -619,7 +630,7 @@
                 "type": "bytes32"
             }
         ],
-        "stateMutability": "nonpayable",
+        "stateMutability": "payable",
         "type": "function"
     },
     {
@@ -691,18 +702,16 @@
     {
         "inputs": [
             {
-                "internalType": "bytes32",
-                "name": "_proposalId",
-                "type": "bytes32"
+                "internalType": "uint256",
+                "name": "start",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "limit",
+                "type": "uint256"
             }
         ],
-        "name": "finalizeProposal",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [],
         "name": "getAllDaos",
         "outputs": [
             {
@@ -737,7 +746,18 @@
         "type": "function"
     },
     {
-        "inputs": [],
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "start",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "limit",
+                "type": "uint256"
+            }
+        ],
         "name": "getAllProposals",
         "outputs": [
             {
@@ -745,6 +765,11 @@
                     {
                         "internalType": "bytes32",
                         "name": "proposalId",
+                        "type": "bytes32"
+                    },
+                    {
+                        "internalType": "bytes32",
+                        "name": "daoId",
                         "type": "bytes32"
                     },
                     {
@@ -771,6 +796,21 @@
                         "internalType": "uint256",
                         "name": "totalVotes",
                         "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "yesVotes",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "noVotes",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "abstainVotes",
+                        "type": "uint256"
                     }
                 ],
                 "internalType": "struct OmniVote.Proposal[]",
@@ -791,9 +831,14 @@
                 "type": "bytes32"
             },
             {
-                "internalType": "string",
-                "name": "text",
-                "type": "string"
+                "internalType": "bytes32",
+                "name": "proposalId",
+                "type": "bytes32"
+            },
+            {
+                "internalType": "uint8",
+                "name": "voteType",
+                "type": "uint8"
             }
         ],
         "stateMutability": "view",
@@ -832,6 +877,21 @@
             {
                 "internalType": "uint256",
                 "name": "totalVotes",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "yesVotes",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "noVotes",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "abstainVotes",
                 "type": "uint256"
             }
         ],
@@ -899,6 +959,11 @@
                 "type": "bytes32"
             },
             {
+                "internalType": "bytes32",
+                "name": "daoId",
+                "type": "bytes32"
+            },
+            {
                 "internalType": "string",
                 "name": "description",
                 "type": "string"
@@ -922,6 +987,21 @@
                 "internalType": "uint256",
                 "name": "totalVotes",
                 "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "yesVotes",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "noVotes",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "abstainVotes",
+                "type": "uint256"
             }
         ],
         "stateMutability": "view",
@@ -943,19 +1023,32 @@
     {
         "inputs": [
             {
+                "internalType": "uint256",
+                "name": "newFee",
+                "type": "uint256"
+            }
+        ],
+        "name": "setVoteFee",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
                 "internalType": "bytes32",
                 "name": "_proposalId",
                 "type": "bytes32"
             },
             {
-                "internalType": "uint256",
-                "name": "_weight",
-                "type": "uint256"
+                "internalType": "uint8",
+                "name": "_voteType",
+                "type": "uint8"
             }
         ],
         "name": "submitVote",
         "outputs": [],
-        "stateMutability": "nonpayable",
+        "stateMutability": "payable",
         "type": "function"
     },
     {
@@ -971,9 +1064,14 @@
                 "type": "address"
             },
             {
-                "internalType": "string",
+                "internalType": "bytes32",
                 "name": "_proposalIdText",
-                "type": "string"
+                "type": "bytes32"
+            },
+            {
+                "internalType": "uint8",
+                "name": "_voteType",
+                "type": "uint8"
             }
         ],
         "name": "submitVoteCrossChain",
@@ -984,7 +1082,7 @@
                 "type": "bytes32"
             }
         ],
-        "stateMutability": "nonpayable",
+        "stateMutability": "payable",
         "type": "function"
     },
     {
@@ -1020,19 +1118,13 @@
         "type": "function"
     },
     {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "name": "whitelistedUsers",
+        "inputs": [],
+        "name": "voteFee",
         "outputs": [
             {
-                "internalType": "bool",
+                "internalType": "uint256",
                 "name": "",
-                "type": "bool"
+                "type": "uint256"
             }
         ],
         "stateMutability": "view",
