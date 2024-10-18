@@ -50,20 +50,21 @@ export default function Proposal() {
     const list = { name: `These are the Proposals in ${dao?.name}`, type: "proposal", items: proposals }
 
     return (
-        <div className="container relative  pb-[10rem]">
+        <div className="px-2 md:container relative  pb-[10rem]">
             <PageHeader>
                 <div className="flex justify-between w-full items-start" >
                     <PageHeaderHeading>Explore {dao?.name}</PageHeaderHeading>
                 </div>
                 <PageHeaderDescription>
-                    <div className="flex gap-4 items-center">
-                        <span className="mt-2 flex flex-col gap-2 w-[8rem] h-[8rem] rounded-lg">
+                    <div className="flex gap-4 items-center md:flex-row flex-col">
+                        <span className="mt-2 flex flex-col gap-2 md:w-[8rem] md:h-[8rem] rounded-lg w-full">
                             <img src={dao?.image} className="rounded-lg" />
                         </span>
-                        <div className="flex flex-col gap-2"><span className="flex flex-col gap-2 ">
-                            <h2>{dao?.description} </h2>
-                        </span>
-                            <span className="flex flex-col gap-2 w-[20rem]">
+                        <div className="flex flex-col gap-2 overflow-x-hidden">
+                            <span className="flex flex-col gap-2 ">
+                                <h2>{dao?.description} </h2>
+                            </span>
+                            <span className="flex flex-col gap-2 w-[20rem] overflow-hidden">
                                 <AddressWithCopyButton address={dao?.ownerAddress as string} />
                             </span>
                         </div>

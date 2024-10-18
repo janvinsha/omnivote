@@ -9,9 +9,9 @@ const imageUrl = "https://ipfs.io/ipfs/QmUUshcrtd7Fj4nMmYB3oYRDXcswpB2gw7ECmokcR
 
 export function CardList({ list, useFilter, navRightComponent, loading }: { list: any, useFilter?: any, navRightComponent?: any, loading: boolean }) {
     return (
-        <div className="rounded-lg shadow-sm ring-1 ring-border">
-            <div className="flex items-center p-2 pb-0">
-                <div className="flex-1 pl-4 text-lg font-medium py-4">
+        <div className="md:rounded-lg md:shadow-sm md:ring-1 md:ring-border">
+            <div className="flex items-center px-4 p-2 pb-0">
+                <div className="flex-1 md:pl-4 text-lg font-medium md:py-4 py-2">
                     <h2 className="capitalize">{list?.name}</h2>
                 </div>
                 {navRightComponent ? (
@@ -35,7 +35,7 @@ export function CardList({ list, useFilter, navRightComponent, loading }: { list
                     <Skeleton className="w-full min-w-[25%] rounded-lg h-[18rem]" />
                     <Skeleton className="w-full min-w-[25%] rounded-lg h-[18rem]" />
                     <Skeleton className="w-full min-w-[25%] rounded-lg h-[18rem]" />
-                </div> : <div className="grid grid-cols-1 md:grid-cols-4 gap-2 p-4">
+                </div> : <div className="grid grid-cols-1 md:grid-cols-4 gap-2 md:p-4 p-2">
                     {list?.items?.map((item: any, key: number) => (
                         <div key={item.id + key} className="w-full min-w-[25%] border ring-1 ring-border rounded-lg shadow-sm overflow-hidden">
                             <div className="text-center relative">
@@ -45,10 +45,10 @@ export function CardList({ list, useFilter, navRightComponent, loading }: { list
                                 <img
                                     src={item.image || imageUrl}
                                     alt={item.name}
-                                    className="w-full h-[16rem] object-cover"
+                                    className="w-full md:h-[16rem] h-[14rem] object-cover"
                                 />
                             </div>
-                            <div className="flex p-4 flex-col">
+                            <div className="flex md:p-4 p-2 flex-col">
 
                                 <span className="flex items-center gap-2 truncate">
                                     <img
