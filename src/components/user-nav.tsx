@@ -1,14 +1,12 @@
-import { userInfo } from "os";
+
 import {
   Avatar,
   AvatarFallback,
-  AvatarImage,
 } from "./ui/avatar"
 import { Button } from "./ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -17,11 +15,9 @@ import {
 } from "./ui/dropdown-menu"
 
 
-import { useWeb3Auth } from "@web3auth/modal-react-hooks";
 import { useAccount, useDisconnect } from 'wagmi'
 import { ConnectWalletDialog } from "./wallet-connect-dialog";
 import Identicon from "./identicon";
-
 
 export function UserNav() {
 

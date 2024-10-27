@@ -8,11 +8,8 @@ import { cn } from "@/lib/utils"
 import { MainNav } from "@/components/main-nav"
 import { MobileNav } from "@/components/mobile-nav"
 import { ModeToggle } from "@/components/mode-toggle"
-import { buttonVariants } from "./ui/button"
-import { CommandMenu } from "./command-menu"
+
 import { UserNav } from "./user-nav"
-import Image from "next/image"
-import { useEffect } from "react"
 
 export function SiteHeader() {
   const { theme } = useTheme()

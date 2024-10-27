@@ -1,7 +1,6 @@
 // components/ProgressButton.tsx
 import React from 'react';
-import { Button, ButtonProps } from '@/components/ui/button'; // Import Button and ButtonProps from shadcn
-import { Progress } from './ui/progress';
+import { ButtonProps } from '@/components/ui/button'; // Import Button and ButtonProps from shadcn
 
 interface ProgressButtonProps extends ButtonProps {
     percentage: number; // Add percentage prop

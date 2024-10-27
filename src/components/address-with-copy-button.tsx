@@ -24,7 +24,7 @@ const AddressWithCopyButton = ({ address, className }: { address: string, classN
     return (
         <div className={clsx("flex items-center", className)}
         >
-            <span className="text-gray-700 text-xs">{address}</span>
+            <span className="text-xs">{address}</span>
             <Button variant="ghost" size="sm" onClick={handleCopy} className="px-2 outline-none">
                 {copied ? <CheckIcon className="w-5 h-5" /> : <CopyIcon className="w-5 h-5" />}
             </Button>
