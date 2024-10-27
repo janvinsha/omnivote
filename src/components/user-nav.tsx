@@ -21,7 +21,7 @@ import { useWeb3Auth } from "@web3auth/modal-react-hooks";
 import { useAccount, useDisconnect } from 'wagmi'
 import { ConnectWalletDialog } from "./wallet-connect-dialog";
 import Identicon from "./identicon";
-
+import { ConnectKitButton } from "connectkit";
 
 export function UserNav() {
 

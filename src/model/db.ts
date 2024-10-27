@@ -1,7 +1,8 @@
 import mongoose, { Mongoose } from 'mongoose';
 
 // Ensure that the MONGODB_URI environment variable is set
-const MONGODB_URI = process.env.NEXT_PUBLIC_MONGODB_URI || "";
+const MONGODB_URI = (process.env.NEXT_PUBLIC_APP_ENV === "testnet" ? process.env.NEXT_PUBLIC_MONGODB_URI : process.env.NEXT_PUBLIC_MONGODB_URI_PROD) || "";
+
 if (!MONGODB_URI) {
     throw new Error('Please define the MONGODB_URI environment variable in .env.local');
 }

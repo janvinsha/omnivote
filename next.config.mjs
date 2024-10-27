@@ -4,6 +4,10 @@ const nextConfig = {
   images: {
     domains: ["etherscan.io", "ipfs.io","ipfs.infura.io"],
   },
+  webpack: (config) => {
+    config.resolve.fallback = { fs: false, net: false, tls: false };
+    return config;
+  },
 };
 
 export default nextConfig;

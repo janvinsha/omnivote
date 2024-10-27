@@ -19,6 +19,7 @@ export function ConnectWalletDialog() {
         closeDialog()
     }
     const { connectors, connect } = useConnect()
+    console.log("THESE ARE THE CONNECTORS", connectors)
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen} >
             <DialogTrigger asChild>
@@ -33,7 +34,7 @@ export function ConnectWalletDialog() {
                         {connectors.map((connector) => (
                             <Button className="h-32" size="sm" variant="outline" key={connector.uid} onClick={() => handleConnect(connector)}>
                                 <div className="flex flex-col gap-2 items-center">
-                                    <img src={connector.icon} className="w-[4rem]" alt="Connector Icon" />
+                                    {connector.icon && <img src={connector.icon} className="w-[4rem]" alt="Connector Icon" />}
                                     <span>{connector.name}</span>
                                 </div>
 

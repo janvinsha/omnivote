@@ -17,6 +17,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <Provider>
       <WagmiProvider config={config}>
         <QueryClientProvider client={queryClient}>
+
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
@@ -28,6 +29,7 @@ export default function App({ Component, pageProps }: AppProps) {
             <Toaster />
             <SiteFooter />
           </ThemeProvider>
+
         </QueryClientProvider>
       </WagmiProvider>
     </Provider >
