@@ -1,11 +1,11 @@
 
 import Link from "next/link"
 
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
-import { Connector, useConnect } from 'wagmi'
+import { useConnect } from 'wagmi'
 
 export function ConnectWalletDialog() {
     const [isOpen, setIsOpen] = useState(false);  // State to control dialog visibility
@@ -19,6 +19,7 @@ export function ConnectWalletDialog() {
         closeDialog()
     }
     const { connectors, connect } = useConnect()
+    console.log("THESE ARE THE CONNECTORS", connectors)
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen} >
             <DialogTrigger asChild>
@@ -33,7 +34,7 @@ export function ConnectWalletDialog() {
                         {connectors.map((connector) => (
                             <Button className="h-32" size="sm" variant="outline" key={connector.uid} onClick={() => handleConnect(connector)}>
                                 <div className="flex flex-col gap-2 items-center">
-                                    <img src={connector.icon} className="w-[4rem]" alt="Connector Icon" />
+                                    {connector.icon && <img src={connector.icon} className="w-[4rem]" alt="Connector Icon" />}
                                     <span>{connector.name}</span>
                                 </div>
 
