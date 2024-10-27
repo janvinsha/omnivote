@@ -20,7 +20,6 @@ import Loader from "@/components/loader";
 import { Badge } from "@/components/ui/badge";
 import ProgressButton from "@/components/progress-button";
 import { useAccount } from 'wagmi'
-import { uploadFileToIPFS } from "@/services/adapters/IPFSAdapter";
 import { switchChain, writeContract } from '@wagmi/core'
 import { config } from "@/config/wagmiConfig";
 import { ethers } from "ethers";

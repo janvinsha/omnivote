@@ -1,11 +1,11 @@
 
 import Link from "next/link"
 
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
-import { Connector, useConnect } from 'wagmi'
+import { useConnect } from 'wagmi'
 
 export function ConnectWalletDialog() {
     const [isOpen, setIsOpen] = useState(false);  // State to control dialog visibility

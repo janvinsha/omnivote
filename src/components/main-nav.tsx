@@ -5,8 +5,6 @@ import { usePathname } from "next/navigation"
 
 import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
-import { Icons } from "./icons"
-import Image from "next/image"
 import { useTheme } from "next-themes"
 
 export function MainNav() {
