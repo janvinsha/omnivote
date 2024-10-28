@@ -98,7 +98,7 @@ export default function ProposalDetails() {
                 await switchChain(config, { chainId: getChainId(chainToVote as string) })
             }
 
-            console.log("THIS IS THE DATA", realChainAddress, realChainToVoteAddress);
+        
             if (getChainId(chainToVote as string) == getChainId(proposal?.mainChain as string)) {
 
                 await writeContract(config, {

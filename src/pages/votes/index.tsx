@@ -24,7 +24,6 @@ export default function Votes() {
 
         await apiw.get(`vote?voter=${search}`).then((data: any) => {
             const _votes: IVote[] = data?.votes;
-            console.log("THIS IS THE PROPOSAL", _votes)
             setVotes(_votes as any);
         });
     };

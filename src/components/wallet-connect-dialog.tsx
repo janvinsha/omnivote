@@ -19,7 +19,6 @@ export function ConnectWalletDialog() {
         closeDialog()
     }
     const { connectors, connect } = useConnect()
-    console.log("THESE ARE THE CONNECTORS", connectors)
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen} >
             <DialogTrigger asChild>
