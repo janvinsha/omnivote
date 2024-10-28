@@ -18,7 +18,7 @@ export default function Dao() {
         setLoading(true)
         try {
             await apiw.get('dao').then((data: any) => {
-                console.log("THIS IS THE DAO", data)
+             
                 const daos = data.daos as IDao[];
                 setDaos(daos)
             });
