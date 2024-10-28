@@ -7,6 +7,7 @@ export const siteConfig = {
   links: {
     twitter: "https://twitter.com/janvinsha",
     github: "https://github.com/janvinsha",
+    portfolio: "https://jandevincent.xyz"
   },
 }
 

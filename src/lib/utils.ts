@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { amoyContractAddress, bscTestContractAddress, avaxContractAddress, polygonContractAddress, bscContractAddress, avalanceContractAddress, amoyChainSelector, bscTestChainSelector, avaxChainSelector, polygonChainSelector, bscChainSelector, avalanceChainSelector, amoyChainId, bscTestChainId, avaxChainId, polygonChainId, bscChainId, avalanceChainId, sepoliaContractAddress, ethContractAddress, sepoliaChainSelector, ethChainSelector, sepoliaChainId, ethChainId, sepoliaScanUrl, amoyScanUrl, bscTestScanUrl, avaxScanUrl, ethScanUrl, polygonScanUrl, bscScanUrl, avalanceScanUrl } from "@/data/contracts"
+import { amoyContractAddress, bscTestContractAddress, avaxContractAddress, polygonContractAddress, bscContractAddress, avalancheContractAddress, amoyChainSelector, bscTestChainSelector, avaxChainSelector, polygonChainSelector, bscChainSelector, avalancheChainSelector, amoyChainId, bscTestChainId, avaxChainId, polygonChainId, bscChainId, avalancheChainId, sepoliaContractAddress, ethContractAddress, sepoliaChainSelector, ethChainSelector, sepoliaChainId, ethChainId, sepoliaScanUrl, amoyScanUrl, bscTestScanUrl, avaxScanUrl, ethScanUrl, polygonScanUrl, bscScanUrl, avalancheScanUrl } from "@/data/contracts"
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -22,7 +22,7 @@ export function getChainImage(contractAddress: string) {
     [ethContractAddress]: "https://cryptologos.cc/logos/ethereum-eth-logo.png",
     [polygonContractAddress]: "https://icons.llamao.fi/icons/chains/rsz_polygon.jpg",
     [bscContractAddress]: "https://icons.llamao.fi/icons/chains/rsz_binance.jpg",
-    [avalanceContractAddress]: "https://icons.llamao.fi/icons/chains/rsz_avalanche.jpg",
+    [avalancheContractAddress]: "https://icons.llamao.fi/icons/chains/rsz_avalanche.jpg",
   };
   return chainToImg[contractAddress] || "https://chainlist.org/unknown-logo.png";
 }
@@ -33,12 +33,12 @@ export function getChainName(contractAddress: string) {
     [sepoliaContractAddress]: "Ethereum Sepolia Testnet",
     [amoyContractAddress]: "Polygon Amoy Testnet",
     [bscTestContractAddress]: "Binance Smart Chain Testnet",
-    [avaxContractAddress]: "Avalance Testnet",
+    [avaxContractAddress]: "Avalanche Testnet",
 
     [ethContractAddress]: "Ethereum Mainnet",
     [polygonContractAddress]: "Polygon Mainnet",
     [bscContractAddress]: "Binance Smart Chain Mainnet",
-    [avalanceContractAddress]: "Avalanche Mainnet",
+    [avalancheContractAddress]: "Avalanche Mainnet",
   };
   return chainToName[contractAddress] || "Polygon Amoy Testnet";
 }
@@ -54,7 +54,7 @@ export function getChainTokenName(contractAddress: string) {
     [ethContractAddress]: "Eth",
     [polygonContractAddress]: "Matic",
     [bscContractAddress]: "Bnb",
-    [avalanceContractAddress]: "Avax",
+    [avalancheContractAddress]: "Avax",
   };
   return chainToName[contractAddress] || "Matic testnet";
 }
@@ -69,7 +69,7 @@ export function getCreationFee(contractAddress: string) {
     [ethContractAddress]: "0.0001",
     [polygonContractAddress]: "0.0004",
     [bscContractAddress]: "0.0005",
-    [avalanceContractAddress]: "0.01",
+    [avalancheContractAddress]: "0.01",
   };
   return chainToName[contractAddress] || "0.0004";
 }
@@ -84,7 +84,7 @@ export function getVoteFee(contractAddress: string) {
     [ethContractAddress]: "0.000025",
     [polygonContractAddress]: "0.0001",
     [bscContractAddress]: "0.000125",
-    [avalanceContractAddress]: "0.0025",
+    [avalancheContractAddress]: "0.0025",
   };
   return chainToName[contractAddress] || "0.000125";
 }
@@ -115,9 +115,9 @@ export const omnivoteContractList = appEnv === "testnet"
     }, {
       value: bscContractAddress, name: "BSC Mainnet"
     },
-    {
-      value: avalanceContractAddress, name: "Avalanche Mainnet"
-    }
+    // {
+    //   value: avalancheContractAddress, name: "Avalanche Mainnet"
+    // }
   ]
 
 // Return the opposite chain selector based on contract address
@@ -131,7 +131,7 @@ export function getChainSelectorCrossChain(contractAddress: string) {
     [ethContractAddress]: ethChainSelector,
     [polygonContractAddress]: polygonChainSelector,
     [bscContractAddress]: bscChainSelector,
-    [avalanceContractAddress]: avalanceChainSelector,
+    [avalancheContractAddress]: avalancheChainSelector,
   };
   return chainToSelector[contractAddress];
 }
@@ -148,7 +148,7 @@ export function getChainId(contractAddress: string) {
     [ethContractAddress]: ethChainId,
     [polygonContractAddress]: polygonChainId,
     [bscContractAddress]: bscChainId,
-    [avalanceContractAddress]: avalanceChainId,
+    [avalancheContractAddress]: avalancheChainId,
   };
   return chainToChainId[contractAddress];
 }
@@ -165,7 +165,7 @@ export function getContractUrl(contractAddress: string) {
     [ethContractAddress]: ethScanUrl,
     [polygonContractAddress]: polygonScanUrl,
     [bscContractAddress]: bscScanUrl,
-    [avalanceContractAddress]: avalanceScanUrl,
+    [avalancheContractAddress]: avalancheScanUrl,
   };
   return chainToChainId[contractAddress];
 }
