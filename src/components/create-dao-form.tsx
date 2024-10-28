@@ -18,7 +18,7 @@ import { toast } from "@/components/ui/use-toast"
 import React, { useEffect, useState } from "react"
 import ApiWrapper from "@/lib/ApiWrapper"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
-import { amoyContractAddress, bscTestContractAddress, avaxContractAddress, polygonContractAddress, bscContractAddress, avalanceContractAddress } from "../data/contracts"
+import { amoyContractAddress, polygonContractAddress, } from "../data/contracts"
 import OmnivoteABI from "../data/abis/OmnivoteABI.json"
 import { Checkbox } from "./ui/checkbox";
 import { uploadFileToIPFS } from "@/services/adapters/IPFSAdapter";
@@ -76,11 +76,7 @@ export function CreateDaoForm({ closeDialog, refreshList }: { closeDialog: any, 
     async function onSubmit(data: ProfileFormValues) {
         setIsSubmitting(true);
 
-        console.log("THIS IS THE DATA", data)
         try {
-
-
-
             if (!banner) {
                 toast({
                     title: "Please upload a banner",
@@ -92,6 +88,7 @@ export function CreateDaoForm({ closeDialog, refreshList }: { closeDialog: any, 
                 })
                 return;
             }
+
             let _banner = await uploadFileToIPFS(banner);
 
             const chainIdMainChain = getChainId(data.mainChain as string);
@@ -100,9 +97,13 @@ export function CreateDaoForm({ closeDialog, refreshList }: { closeDialog: any, 
                 await switchChain(config, { chainId: chainIdMainChain })
             }
 
+            const realChainAddress = data?.mainChain?.split("-")[0]
+
+            console.log("THIS IS THE DATA", { ...data, _banner })
             await writeContract(config, {
                 abi: OmnivoteABI,
-                address: data.mainChain as any,
+                address: realChainAddress as any,
+                chainId: getChainId(data?.mainChain),
                 functionName: 'addDao',
                 args: [
                     data.name, data.description
@@ -117,7 +118,7 @@ export function CreateDaoForm({ closeDialog, refreshList }: { closeDialog: any, 
                         config,
                         {
                             abi: OmnivoteABI,
-                            address: data.mainChain as any,
+                            address: realChainAddress as any,
                             eventName: 'DaoAdded',
                             onLogs(logs) {
                                 console.log('New logs!', logs);
@@ -303,7 +304,7 @@ export function CreateDaoForm({ closeDialog, refreshList }: { closeDialog: any, 
                             </FormItem>
                         )}
                     />
-                    <p className="text-red-500 text-xs">{getCreationFee(mainChain as string)} {getChainTokenName(mainChain as string) || "Eth"} fee to create Dao</p>
+                    <p className="text-red-500 text-xs">{getCreationFee(mainChain as string)} {getChainTokenName(mainChain as string) || "Bnb"} fee to create Dao</p>
                     <Button type="submit">Create DAO {isSubmitting && <Loader size="sm" />}</Button>
                 </form>
             </Form>
@@ -314,21 +315,3 @@ export function CreateDaoForm({ closeDialog, refreshList }: { closeDialog: any, 
 
 
 
-// async function onTestCreateSchema() {
-//     try {
-//         const signProtocol = new SignProtocolAdapter({ chain: EvmChains.polygonAmoy })
-//         const response = await signProtocol.createSchema({
-//             name: 'proposalId', type: 'string',
-//         })
-//     } catch (error) {
-//         console.log("THIS IS THE ERROR", error)
-//     }
-// }
-// async function onTestCreateAttestation() {
-//     try {
-//         const signProtocol = new SignProtocolAdapter({ chain: EvmChains.sepolia })
-//         const response = await signProtocol.createAttestation({ proposalId: "12345" })
-//     } catch (error) {
-//         console.log("THIS IS THE ERROR", error)
-//     }
-// }

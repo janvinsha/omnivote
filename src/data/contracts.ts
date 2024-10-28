@@ -24,24 +24,28 @@ export const bscTestScanUrl = "https://testnet.bscscan.com/address/0xEf27dEc223E
 
 //MAINNET
 export const ethContractAddress = "";
-export const polygonContractAddress = "";
-export const avalanceContractAddress = "";
-export const bscContractAddress = ""
+export const polygonContractAddress = "0x46874FEe5Ac808277559c619c52B295429A32911-polygon";
+export const bscContractAddress = "0x46874FEe5Ac808277559c619c52B295429A32911-bsc"
+export const avalancheContractAddress = "0x46874FEe5Ac808277559c619c52B295429A32911-avalanche";
 
-export const ethRouterAddress = "0x80226fc0Ee2b096224EeAc085Bb9a8cba1146f7D";
 export const polygonRouterAddress = "0x849c5ED5a80F5B408Dd4969b78c2C8fdf0565Bfe";
-export const avalanceRouterAddress = "0x5FA30697e90eB30954895c45b028F7C0dDD39b12";
 export const bscRouterAddress = "0x34B03Cb9086d7D758AC55af71584F81A598759FE"
+export const ethRouterAddress = "0x80226fc0Ee2b096224EeAc085Bb9a8cba1146f7D";
+export const avalancheRouterAddress = "0x5FA30697e90eB30954895c45b028F7C0dDD39b12";
+
 
 export const ethChainSelector = "5009297550715157269";
+
 export const polygonChainSelector = "4051577828743386545";
-export const avalanceChainSelector = "6433500567565415381";
 export const bscChainSelector = "11344663589394136015";
+export const avalancheChainSelector = "6433500567565415381";
+
 
 export const ethScanUrl = "";
-export const polygonScanUrl = "";
-export const avalanceScanUrl = "";
-export const bscScanUrl = ""
+export const polygonScanUrl = "https://polygonscan.com/address/0x46874fee5ac808277559c619c52b295429a32911";
+export const bscScanUrl = "https://bscscan.com/address/0x659ce0fc2499e1fa14d30f5cd88ad058ba490e39"
+export const avalancheScanUrl = "https://snowtrace.io/address/0x46874FEe5Ac808277559c619c52B295429A32911";
+
 
 
 
@@ -54,7 +58,7 @@ export const bscTestChainId = 97;
 
 export const ethChainId = 1;
 export const polygonChainId = 137;
-export const avalanceChainId = 43114;
+export const avalancheChainId = 43114;
 export const bscChainId = 56
 
 
@@ -68,6 +72,6 @@ export const bscChainId = 56
 // ethContractAddress: 25000000000000
 // polygonContractAddress: 100000000000000
 // bscContractAddress: 125000000000000
-// avalanceContractAddress: 2500000000000000
+// avalancheContractAddress: 2500000000000000
 
 

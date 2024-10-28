@@ -91,15 +91,19 @@ export default function ProposalDetails() {
         }
         setVoteLoading(voteType)
 
+        const realChainAddress = proposal?.mainChain?.split("-")[0]
+        const realChainToVoteAddress = chainToVote?.split("-")[0]
         try {
             if (connectedChainId != getChainId(chainToVote as string)) {
                 await switchChain(config, { chainId: getChainId(chainToVote as string) })
             }
+
+            console.log("THIS IS THE DATA", realChainAddress, realChainToVoteAddress);
             if (getChainId(chainToVote as string) == getChainId(proposal?.mainChain as string)) {
 
                 await writeContract(config, {
                     abi: OmnivoteABI,
-                    address: proposal?.mainChain as any,
+                    address: realChainAddress as any,
                     functionName: 'submitVote',
                     args: [
                         proposal?.onChainID, voteTypeId
@@ -109,10 +113,10 @@ export default function ProposalDetails() {
             } else {
                 await writeContract(config, {
                     abi: OmnivoteABI,
-                    address: chainToVote as any,
+                    address: realChainToVoteAddress as any,
                     functionName: 'submitVoteCrossChain',
                     args: [
-                        getChainSelectorCrossChain(proposal?.mainChain as string), proposal?.mainChain as string, proposal?.onChainID as string, voteTypeId
+                        getChainSelectorCrossChain(proposal?.mainChain as string), realChainAddress as string, proposal?.onChainID as string, voteTypeId
                     ],
                     value: ethers.parseEther(getVoteFee(chainToVote as string))
                 })

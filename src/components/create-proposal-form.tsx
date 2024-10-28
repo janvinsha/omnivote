@@ -40,7 +40,7 @@ import Loader from "./loader";
 import { uploadFileToIPFS } from "@/services/adapters/IPFSAdapter";
 import { getChainId } from "@/lib/utils";
 import { useAccount } from 'wagmi'
-import { switchChain, writeContract, watchContractEvent,waitForTransactionReceipt } from '@wagmi/core'
+import { switchChain, writeContract, watchContractEvent, waitForTransactionReceipt } from '@wagmi/core'
 import { config } from "@/config/wagmiConfig";
 import { ethers } from "ethers";
 //TODO: add a better date and time pitcker
@@ -130,6 +130,7 @@ export function CreateProposalForm({ closeDialog, refreshList }: { closeDialog: 
     async function onSubmit(data: ProfileFormValues) {
 
         setIsSubmitting(true);
+
         try {
             if (!banner) {
                 toast({
@@ -144,6 +145,7 @@ export function CreateProposalForm({ closeDialog, refreshList }: { closeDialog: 
             }
             let _banner = await uploadFileToIPFS(banner);
 
+            console.log("THIS IS THE DATA", { ...data, _banner })
             const startTime = data.startTime.getTime();
             const endTime = data.endTime.getTime()
             const chainIdMainChain = getChainId(selectedDao?.mainChain as string);
@@ -152,9 +154,11 @@ export function CreateProposalForm({ closeDialog, refreshList }: { closeDialog: 
                 await switchChain(config, { chainId: chainIdMainChain })
             }
 
+            //Use only in write contracts, this is because thats where we need the real address
+            const realChainAddress = selectedDao?.mainChain?.split("-")[0]
             await writeContract(config, {
                 abi: OmnivoteABI,
-                address: selectedDao?.mainChain as any,
+                address: realChainAddress as any,
                 functionName: 'createProposal',
 
                 args: [
@@ -169,7 +173,7 @@ export function CreateProposalForm({ closeDialog, refreshList }: { closeDialog: 
                         config,
                         {
                             abi: OmnivoteABI,
-                            address: selectedDao?.mainChain as any,
+                            address: realChainAddress as any,
                             eventName: 'ProposalCreated',
                             onLogs(logs: any) {
                                 console.log('New logs!', logs);

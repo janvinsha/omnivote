@@ -77,9 +77,9 @@ export default function Home() {
             <Link
               target="_blank"
               rel="noreferrer"
-              href={siteConfig.links.github}
+              href={siteConfig.links.portfolio}
             >
-              GitHub
+              Support
             </Link>
           </Button>
         </PageActions>
