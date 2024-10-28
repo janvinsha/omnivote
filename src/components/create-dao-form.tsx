@@ -92,7 +92,6 @@ export function CreateDaoForm({ closeDialog, refreshList }: { closeDialog: any, 
             let _banner = await uploadFileToIPFS(banner);
 
             const chainIdMainChain = getChainId(data.mainChain as string);
-            console.log("THIS IS THE CHAIN", chainIdMainChain)
             if (connectedChainId != chainIdMainChain) {
                 await switchChain(config, { chainId: chainIdMainChain })
             }
@@ -133,7 +132,6 @@ export function CreateDaoForm({ closeDialog, refreshList }: { closeDialog: any, 
                 }
             });
 
-            console.log("RESULT FROM ADDING DAO", resultWatch)
             await apiw.post('dao', {
                 ...data, image: _banner, onChainID: resultWatch[0]?.topics?.[1] as string, ownerAddress: address
             })
@@ -170,7 +168,6 @@ export function CreateDaoForm({ closeDialog, refreshList }: { closeDialog: any, 
 
     return (
         <>
-            {/* <Button onClick={onTestCreateAttestation}>Test</Button> */}
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                     <FormField

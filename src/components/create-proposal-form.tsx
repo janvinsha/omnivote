@@ -239,7 +239,6 @@ export function CreateProposalForm({ closeDialog, refreshList }: { closeDialog: 
                             <FormItem>
                                 <FormLabel>Dao</FormLabel>
                                 <Select onValueChange={(value) => {
-                                    console.log("WHAT THE FUCK IS HAPPENING HERE", value)
                                     field.onChange(value);  // Set form value
                                     handleDaoSelect(value); // Update selected DAO
                                 }} defaultValue={field.value}>
@@ -387,14 +386,14 @@ export function CreateProposalForm({ closeDialog, refreshList }: { closeDialog: 
                                                 onChange={(e) => {
                                                     e.preventDefault()
                                                     setSelectedStartTime(e.target.value);
-                                                    console.log("THIS SI THE E", e.target.value)
+
                                                     if (e.target.value && field.value) {
                                                         // Combine the selected time with the existing date
                                                         const [hours, minutes] = e.target.value.split(":").map(Number);
                                                         const updatedDate = new Date(field.value);
                                                         updatedDate.setHours(hours, minutes);
 
-                                                        console.log("THIS SI THE UPFATED DATE", updatedDate)
+
                                                         // Update the field with the new date and time
                                                         field.onChange(updatedDate);
                                                     }
@@ -489,23 +488,3 @@ export function CreateProposalForm({ closeDialog, refreshList }: { closeDialog: 
 }
 
 
-// async function onTestCreateAttestation() {
-//     try {
-//         const signProtocol = new SignProtocolAdapter({ chain: EvmChains.sepolia })
-//         const response = await signProtocol.createAttestation({ proposalId: "12345" })
-//     } catch (error) {
-//         console.log("THIS IS THE ERROR", error)
-//     }
-// }
-
-// async function onTestCreateSchema() {
-//     try {
-//         const signProtocol = new SignProtocolAdapter({ chain: EvmChains.baseSepolia })
-//         const response = await signProtocol.createSchema({
-//             name: 'proposalId', type: 'string',
-//         })
-//         console.log("THIS IS THE RESPONSE", response)
-//     } catch (error) {
-//         console.log("THIS IS THE ERROR", error)
-//     }
-// }
